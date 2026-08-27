@@ -66,7 +66,7 @@
         .top-bar {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             gap: 14px;
             padding: 14px 16px;
             background: rgba(16, 17, 22, .82);
@@ -118,21 +118,29 @@
             color: var(--text);
         }
         .account-selector button,
-        .close-btn {
+        .close-btn,
+        .icon-btn {
             border: 1px solid var(--line);
             background: var(--surface-3);
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             cursor: pointer;
             transition: .2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            color: var(--muted);
+        }
+        .account-selector button {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
         }
         .account-selector button:hover,
-        .close-btn:hover {
+        .close-btn:hover,
+        .icon-btn:hover {
             transform: translateY(-1px);
             border-color: var(--primary);
             color: var(--primary);
@@ -145,14 +153,8 @@
             display: block;
         }
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: none;
-            }
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: none; }
         }
         .calendar-wrapper,
         .overview-section,
@@ -640,13 +642,8 @@
             animation: pulse 2s infinite;
         }
         @keyframes pulse {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(155, 124, 255, .6);
-            }
-            50% {
-                box-shadow: 0 0 0 4px rgba(155, 124, 255, 0);
-            }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(155, 124, 255, .6); }
+            50% { box-shadow: 0 0 0 4px rgba(155, 124, 255, 0); }
         }
         .indicators {
             display: flex;
@@ -1187,14 +1184,8 @@
             animation: modalIn .2s ease;
         }
         @keyframes modalIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px) scale(.98);
-            }
-            to {
-                opacity: 1;
-                transform: none;
-            }
+            from { opacity: 0; transform: translateY(8px) scale(.98); }
+            to { opacity: 1; transform: none; }
         }
         .modal h2 {
             margin: 0 0 16px;
@@ -1301,277 +1292,83 @@
             transform: translate(-50%, 0);
         }
         @media (max-width: 900px) {
-            .overview-cards {
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            }
-            .day-cell {
-                min-height: 100px;
-            }
-            .calculator-display {
-                padding: 16px;
-            }
-            .main-display {
-                font-size: 2rem;
-            }
-            .calc-btn {
-                padding: 14px 0;
-                font-size: 1.1rem;
-            }
-            .salary-form {
-                padding: 16px;
-            }
-            .form-row input {
-                padding: 10px;
-                font-size: .95rem;
-            }
-            .month-end-cards {
-                max-height: 150px;
-            }
-            .calc-tabs {
-                overflow-x: auto;
-            }
-            .salary-title {
-                font-size: 1rem;
-            }
-            .tab-actions {
-                flex-wrap: wrap;
-            }
+            .overview-cards { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+            .day-cell { min-height: 100px; }
+            .calculator-display { padding: 16px; }
+            .main-display { font-size: 2rem; }
+            .calc-btn { padding: 14px 0; font-size: 1.1rem; }
+            .salary-form { padding: 16px; }
+            .form-row input { padding: 10px; font-size: .95rem; }
+            .month-end-cards { max-height: 150px; }
+            .calc-tabs { overflow-x: auto; }
+            .salary-title { font-size: 1rem; }
+            .tab-actions { flex-wrap: wrap; }
         }
         @media (max-width: 650px) {
-            body {
-                padding-bottom: 120px;
-            }
-            .app {
-                padding: 10px;
-                gap: 10px;
-            }
-            .top-bar {
-                border-radius: 15px;
-                padding: 10px;
-            }
+            body { padding-bottom: 120px; }
+            .app { padding: 10px; gap: 10px; }
+            .top-bar { border-radius: 15px; padding: 10px; }
             .calendar-wrapper,
             .overview-section,
             .recurring-header,
             .settings-group,
-            .calculator-wrapper {
-                padding: 14px;
-                border-radius: 18px;
-            }
-            .calendar-header {
-                align-items: flex-start;
-            }
-            .month-year {
-                font-size: 1.2rem;
-            }
-            .nav-buttons button {
-                padding: 8px 10px;
-                font-size: .8rem;
-            }
-            .weekdays,
-            .days-grid {
-                gap: 4px;
-            }
-            .weekdays {
-                font-size: .56rem;
-            }
-            .day-cell {
-                min-height: 78px;
-                padding: 7px;
-                border-radius: 11px;
-            }
-            .day-number {
-                font-size: .75rem;
-            }
-            .indicators {
-                gap: 2px;
-                margin-top: 4px;
-            }
-            .income-dot,
-            .expense-dot {
-                padding: 2px 4px;
-                font-size: .5rem;
-            }
-            .day-balance {
-                font-size: .55rem;
-                padding-top: 6px;
-            }
-            .overview-header {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-            .overview-cards {
-                grid-template-columns: 1fr 1fr;
-                gap: 7px;
-            }
-            .overview-card {
-                min-height: 92px;
-                padding: 12px;
-            }
-            .overview-card .value {
-                font-size: 1rem;
-            }
-            .settings-row {
-                align-items: stretch;
-                flex-direction: column;
-                gap: 6px;
-            }
-            .settings-row label {
-                width: auto;
-            }
-            .add-account-form {
-                flex-direction: column;
-            }
-            .recurring-item {
-                align-items: flex-start;
-                flex-wrap: wrap;
-            }
-            .recurring-item .actions {
-                margin-left: auto;
-            }
-            .bottom-nav {
-                bottom: 12px;
-                max-width: calc(100vw - 20px);
-                width: max-content;
-                padding: 8px;
-            }
-            .bottom-nav-item {
-                padding: 12px 16px;
-                font-size: .8rem;
-            }
-            .calculator-display {
-                padding: 14px;
-            }
-            .main-display {
-                font-size: 1.8rem;
-            }
-            .calc-btn {
-                padding: 12px 0;
-                font-size: 1rem;
-            }
-            .button-row {
-                gap: 6px;
-            }
-            .calc-tabs {
-                gap: 6px;
-            }
-            .calc-tab {
-                padding: 6px 12px;
-                font-size: .8rem;
-            }
-            .month-end-card {
-                padding: 10px;
-                font-size: .8rem;
-            }
-            .salary-title {
-                font-size: .9rem;
-            }
-            .tab-actions {
-                gap: 4px;
-            }
-            .fab-add {
-                padding: 10px 18px;
-                font-size: .85rem;
-            }
-            .add-btns {
-                grid-template-columns: 1fr;
-            }
-            .result-value {
-                font-size: 1.5rem;
-            }
+            .calculator-wrapper { padding: 14px; border-radius: 18px; }
+            .calendar-header { align-items: flex-start; }
+            .month-year { font-size: 1.2rem; }
+            .nav-buttons button { padding: 8px 10px; font-size: .8rem; }
+            .weekdays, .days-grid { gap: 4px; }
+            .weekdays { font-size: .56rem; }
+            .day-cell { min-height: 78px; padding: 7px; border-radius: 11px; }
+            .day-number { font-size: .75rem; }
+            .indicators { gap: 2px; margin-top: 4px; }
+            .income-dot, .expense-dot { padding: 2px 4px; font-size: .5rem; }
+            .day-balance { font-size: .55rem; padding-top: 6px; }
+            .overview-header { align-items: flex-start; flex-direction: column; }
+            .overview-cards { grid-template-columns: 1fr 1fr; gap: 7px; }
+            .overview-card { min-height: 92px; padding: 12px; }
+            .overview-card .value { font-size: 1rem; }
+            .settings-row { align-items: stretch; flex-direction: column; gap: 6px; }
+            .settings-row label { width: auto; }
+            .add-account-form { flex-direction: column; }
+            .recurring-item { align-items: flex-start; flex-wrap: wrap; }
+            .recurring-item .actions { margin-left: auto; }
+            .bottom-nav { bottom: 12px; max-width: calc(100vw - 20px); width: max-content; padding: 8px; }
+            .bottom-nav-item { padding: 12px 16px; font-size: .8rem; }
+            .calculator-display { padding: 14px; }
+            .main-display { font-size: 1.8rem; }
+            .calc-btn { padding: 12px 0; font-size: 1rem; }
+            .button-row { gap: 6px; }
+            .calc-tabs { gap: 6px; }
+            .calc-tab { padding: 6px 12px; font-size: .8rem; }
+            .month-end-card { padding: 10px; font-size: .8rem; }
+            .salary-title { font-size: .9rem; }
+            .tab-actions { gap: 4px; }
+            .fab-add { padding: 10px 18px; font-size: .85rem; }
+            .add-btns { grid-template-columns: 1fr; }
+            .result-value { font-size: 1.5rem; }
         }
         @media (max-width: 390px) {
-            .overview-cards {
-                grid-template-columns: 1fr;
-            }
-            .day-cell {
-                min-height: 66px;
-                padding: 5px;
-            }
-            .day-number {
-                font-size: .65rem;
-            }
-            .income-dot,
-            .expense-dot {
-                font-size: .45rem;
-                padding: 1px 3px;
-            }
-            .day-balance {
-                font-size: .48rem;
-            }
-            .bottom-nav-item {
-                padding: 10px 12px;
-                font-size: .75rem;
-            }
-            .main-display {
-                font-size: 1.5rem;
-            }
-            .calc-btn {
-                padding: 10px 0;
-                font-size: .9rem;
-            }
-            .calc-tab {
-                padding: 4px 10px;
-                font-size: .75rem;
-            }
-            .month-end-card {
-                padding: 8px;
-                font-size: .75rem;
-            }
-            .salary-title {
-                font-size: .85rem;
-            }
-            .tab-actions {
-                gap: 4px;
-            }
+            .overview-cards { grid-template-columns: 1fr; }
+            .day-cell { min-height: 66px; padding: 5px; }
+            .day-number { font-size: .65rem; }
+            .income-dot, .expense-dot { font-size: .45rem; padding: 1px 3px; }
+            .day-balance { font-size: .48rem; }
+            .bottom-nav-item { padding: 10px 12px; font-size: .75rem; }
+            .main-display { font-size: 1.5rem; }
+            .calc-btn { padding: 10px 0; font-size: .9rem; }
+            .calc-tab { padding: 4px 10px; font-size: .75rem; }
+            .month-end-card { padding: 8px; font-size: .75rem; }
+            .salary-title { font-size: .85rem; }
+            .tab-actions { gap: 4px; }
         }
         @media (prefers-reduced-motion: reduce) {
-            *,
-            *:before,
-            *:after {
-                scroll-behavior: auto !important;
-                animation: none !important;
-                transition: none !important;
-            }
+            *, *:before, *:after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
         }
-        iconify-icon {
-            display: inline-flex;
-            width: 1.1em;
-            height: 1.1em;
-            vertical-align: -.18em;
-            flex: 0 0 auto;
-        }
-        .emoji-badge {
-            width: 28px;
-            height: 28px;
-            margin-right: 7px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 9px;
-            background: rgba(155, 124, 255, .10);
-            color: var(--primary);
-            vertical-align: middle;
-            flex-shrink: 0;
-        }
-        .tx-actions button,
-        .actions button,
-        .nav-buttons button,
-        .account-selector button,
-        .fab-add,
-        .bottom-nav-item {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .tx-actions iconify-icon,
-        .actions iconify-icon {
-            width: 15px;
-            height: 15px;
-        }
-        .fab-add iconify-icon {
-            width: 20px;
-            height: 20px;
-        }
+        iconify-icon { display: inline-flex; width: 1.1em; height: 1.1em; vertical-align: -.18em; flex: 0 0 auto; }
+        .emoji-badge { width: 28px; height: 28px; margin-right: 7px; display: inline-flex; align-items: center; justify-content: center; border-radius: 9px; background: rgba(155, 124, 255, .10); color: var(--primary); vertical-align: middle; flex-shrink: 0; }
+        .tx-actions button, .actions button, .nav-buttons button, .account-selector button, .fab-add, .bottom-nav-item { display: inline-flex; align-items: center; justify-content: center; }
+        .tx-actions iconify-icon, .actions iconify-icon { width: 15px; height: 15px; }
+        .fab-add iconify-icon { width: 20px; height: 20px; }
     </style>
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 </head>
@@ -1584,6 +1381,9 @@
                 <select id="accountSelect"></select>
                 <button id="quickAddAccount" title="New account" aria-label="Create new account"><iconify-icon icon="lucide:plus" aria-hidden="true"></iconify-icon></button>
             </div>
+            <button class="icon-btn" id="topSettingsBtn" title="Settings" aria-label="Open settings">
+                <iconify-icon icon="lucide:settings" aria-hidden="true"></iconify-icon>
+            </button>
         </div>
 
         <section class="view active" id="viewCalendar">
@@ -1718,26 +1518,12 @@
                         </div>
                     </div>
                     <div class="salary-form">
-                        <div class="form-row">
-                            <label for="hourlyRate1">Hourly Rate</label>
-                            <input type="number" id="hourlyRate1" placeholder="0.00" step="0.01" />
-                        </div>
-                        <div class="form-row">
-                            <label for="hoursPerDay1">Hours Per Day</label>
-                            <input type="number" id="hoursPerDay1" placeholder="8" step="0.1" />
-                        </div>
-                        <div class="form-row">
-                            <label for="daysWorked1">Days Worked</label>
-                            <input type="number" id="daysWorked1" placeholder="20" step="1" />
-                        </div>
-                        <button class="calc-btn equals-btn" id="calculateSalary1" style="margin-top:10px; width:100%;">
-                            <iconify-icon icon="lucide:calculator"></iconify-icon> Calculate
-                        </button>
+                        <div class="form-row"><label for="hourlyRate1">Hourly Rate</label><input type="number" id="hourlyRate1" placeholder="0.00" step="0.01" /></div>
+                        <div class="form-row"><label for="hoursPerDay1">Hours Per Day</label><input type="number" id="hoursPerDay1" placeholder="8" step="0.1" /></div>
+                        <div class="form-row"><label for="daysWorked1">Days Worked</label><input type="number" id="daysWorked1" placeholder="20" step="1" /></div>
+                        <button class="calc-btn equals-btn" id="calculateSalary1" style="margin-top:10px; width:100%;"><iconify-icon icon="lucide:calculator"></iconify-icon> Calculate</button>
                     </div>
-                    <div class="result-display" id="salaryResult1" style="display:none;">
-                        <div class="result-value" id="salaryAmount1">$0.00</div>
-                        <div class="result-label">Monthly Salary</div>
-                    </div>
+                    <div class="result-display" id="salaryResult1" style="display:none;"><div class="result-value" id="salaryAmount1">$0.00</div><div class="result-label">Monthly Salary</div></div>
                 </div>
                 <div id="salary2Calc" class="calc-content">
                     <div class="salary-header">
@@ -1748,26 +1534,12 @@
                         </div>
                     </div>
                     <div class="salary-form">
-                        <div class="form-row">
-                            <label for="hourlyRate2">Hourly Rate</label>
-                            <input type="number" id="hourlyRate2" placeholder="0.00" step="0.01" />
-                        </div>
-                        <div class="form-row">
-                            <label for="hoursPerDay2">Hours Per Day</label>
-                            <input type="number" id="hoursPerDay2" placeholder="8" step="0.1" />
-                        </div>
-                        <div class="form-row">
-                            <label for="daysWorked2">Days Worked</label>
-                            <input type="number" id="daysWorked2" placeholder="20" step="1" />
-                        </div>
-                        <button class="calc-btn equals-btn" id="calculateSalary2" style="margin-top:10px; width:100%;">
-                            <iconify-icon icon="lucide:calculator"></iconify-icon> Calculate
-                        </button>
+                        <div class="form-row"><label for="hourlyRate2">Hourly Rate</label><input type="number" id="hourlyRate2" placeholder="0.00" step="0.01" /></div>
+                        <div class="form-row"><label for="hoursPerDay2">Hours Per Day</label><input type="number" id="hoursPerDay2" placeholder="8" step="0.1" /></div>
+                        <div class="form-row"><label for="daysWorked2">Days Worked</label><input type="number" id="daysWorked2" placeholder="20" step="1" /></div>
+                        <button class="calc-btn equals-btn" id="calculateSalary2" style="margin-top:10px; width:100%;"><iconify-icon icon="lucide:calculator"></iconify-icon> Calculate</button>
                     </div>
-                    <div class="result-display" id="salaryResult2" style="display:none;">
-                        <div class="result-value" id="salaryAmount2">$0.00</div>
-                        <div class="result-label">Monthly Salary</div>
-                    </div>
+                    <div class="result-display" id="salaryResult2" style="display:none;"><div class="result-value" id="salaryAmount2">$0.00</div><div class="result-label">Monthly Salary</div></div>
                 </div>
             </div>
         </section>
@@ -1798,7 +1570,6 @@
             <button class="bottom-nav-item active" data-view="calendar"><iconify-icon icon="lucide:calendar"></iconify-icon> Calendar</button>
             <button class="bottom-nav-item" data-view="recurring"><iconify-icon icon="lucide:repeat-2"></iconify-icon> Recurring</button>
             <button class="bottom-nav-item" data-view="calculator"><iconify-icon icon="lucide:calculator"></iconify-icon> Calculator</button>
-            <button class="bottom-nav-item" data-view="settings"><iconify-icon icon="lucide:settings"></iconify-icon> Settings</button>
         </div>
 
         <div class="side-panel-backdrop" id="sidePanelBackdrop"></div>
@@ -1844,19 +1615,15 @@
     <script>
         // ========== DATA & INIT ==========
         const STORAGE_KEY = 'finance_calendar_data_v3';
-
         function defaultAccount(name = 'My Account') {
             return { id: generateId(), name, currency: '€', startBalance: 0, weekStart: 1, transactions: [], recurrences: [] };
         }
-
         function defaultData() {
             const acc = defaultAccount();
             return { accounts: { [acc.id]: acc }, activeAccountId: acc.id };
         }
-
         function generateId() { return Date.now().toString(36) + Math.random().toString(36).substring(2, 6); }
         let data = loadData();
-
         function loadData() {
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
@@ -1865,7 +1632,6 @@
                     if (!parsed.accounts || Object.keys(parsed.accounts).length === 0) return defaultData();
                     if (!parsed.activeAccountId || !parsed.accounts[parsed.activeAccountId])
                         parsed.activeAccountId = Object.keys(parsed.accounts)[0];
-                    // ensure all accounts have required fields
                     Object.keys(parsed.accounts).forEach(id => {
                         const acc = parsed.accounts[id];
                         if (!acc.currency) acc.currency = '€';
@@ -1879,43 +1645,34 @@
             } catch (_) {}
             return defaultData();
         }
-
         function saveData() {
             try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.warn(e); }
         }
-
         function getActiveAccount() { return data.accounts[data.activeAccountId]; }
 
         // ========== HELPERS ==========
         function parseDate(str) { const [y, m, d] = str.split('-').map(Number); return new Date(y, m - 1, d); }
-
         function formatDate(date) {
             const y = date.getFullYear();
             const m = String(date.getMonth() + 1).padStart(2, '0');
             const d = String(date.getDate()).padStart(2, '0');
             return `${y}-${m}-${d}`;
         }
-
         function getDaysInMonth(year, month) { return new Date(year, month + 1, 0).getDate(); }
-
         function getFirstDayOfMonth(year, month, weekStart) {
             const day = new Date(year, month, 1).getDay();
             return (day - weekStart + 7) % 7;
         }
-
         function dateToKey(year, month, day) {
             return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         }
-
         function isSameDay(d1, d2) {
             return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
         }
-
         function formatDisplayDate(dateKey) {
             const [y, m, d] = dateKey.split('-').map(Number);
             return new Date(y, m - 1, d).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
         }
-
         function getWeekdayName(dateKey) {
             const [y, m, d] = dateKey.split('-').map(Number);
             return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(y, m - 1, d).getDay()];
@@ -2021,13 +1778,11 @@
         }
 
         function getBalanceAtEndOfDay(accountId, dateKey, cache) { return getBalanceUpToDate(accountId, dateKey, true, cache); }
-
         function getBalanceAtEndOfMonth(accountId, year, month) {
             const lastDay = getDaysInMonth(year, month);
             const dateKey = dateToKey(year, month, lastDay);
             return getBalanceAtEndOfDay(accountId, dateKey);
         }
-
         function getTotalBalance() {
             let total = 0;
             const todayKey = formatDate(new Date());
@@ -2038,7 +1793,6 @@
 
         // ========== CALENDAR CACHE ==========
         let calendarCache = null;
-
         function prepareCalendarData(year, month, accountId) {
             if (calendarCache && calendarCache.year === year && calendarCache.month === month && calendarCache.accountId === accountId)
                 return calendarCache;
@@ -2078,7 +1832,6 @@
 
         // ========== TOAST ==========
         let toastTimer = null;
-
         function showToast(message) {
             const el = document.getElementById('toast');
             el.textContent = message;
@@ -2095,7 +1848,6 @@
             const today = new Date();
             const currentYear = today.getFullYear();
             const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            // Build a cache for all month-end balances at once for performance
             const cache = new Map();
             for (let m = 0; m < 12; m++) {
                 const lastDay = getDaysInMonth(currentYear, m);
@@ -2189,8 +1941,7 @@
                     return `<div class="transaction-item" data-id="${realId}" data-recurring="${isRecurring}" data-date="${t.date}" data-type="${t.type}" data-amount="${t.amount}" data-desc="${t.desc.replace(' (recurring)', '')}" data-category="${t.category || ''}"><div class="desc"><span class="emoji-badge">${emoji}</span><span class="name">${t.desc}</span>${t.category ? `<span class="cat">${t.category}</span>` : ''}${isRecurring ? '<span class="cat"><iconify-icon icon="lucide:repeat-2" aria-hidden="true"></iconify-icon></span>' : ''}</div><div class="amount ${cls}">${sign}${acc.currency} ${Math.abs(t.amount).toFixed(2)}</div><div class="tx-actions"><button class="edit-btn" aria-label="Edit"><iconify-icon icon="lucide:pencil" aria-hidden="true"></iconify-icon></button><button class="del-btn" aria-label="Delete"><iconify-icon icon="lucide:trash-2" aria-hidden="true"></iconify-icon></button></div></div>`;
                 }).join('');
                 container.querySelectorAll('.transaction-item').forEach(item => {
-                    const id = item.dataset.id,
-                        isRecurring = item.dataset.recurring === 'true';
+                    const id = item.dataset.id, isRecurring = item.dataset.recurring === 'true';
                     item.querySelector('.edit-btn').addEventListener('click', e => {
                         e.stopPropagation();
                         openEditModal(id, isRecurring, item.dataset.date, item.dataset.type, parseFloat(item.dataset.amount), item.dataset.desc, item.dataset.category);
@@ -2243,10 +1994,8 @@
             document.getElementById('modalCategory').value = '';
             document.getElementById('modalRecurrence').value = recurrence;
             document.getElementById('modalOverlay').classList.add('open');
-            // focus on amount field after a short delay
             setTimeout(() => document.getElementById('modalValue').focus(), 100);
         }
-
         function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
         document.getElementById('modalCancel').addEventListener('click', closeModal);
         document.getElementById('modalSave').addEventListener('click', () => {
@@ -2274,9 +2023,7 @@
             showToast(recurrence !== 'none' ? 'Recurring rule added.' : 'Transaction added.');
         });
 
-        let editingId = null,
-            editingIsRecurring = false;
-
+        let editingId = null, editingIsRecurring = false;
         function openEditModal(id, isRecurring, date, type, amount, desc, category) {
             editingId = id;
             editingIsRecurring = isRecurring;
@@ -2288,7 +2035,6 @@
             document.getElementById('editModalTitle').textContent = isRecurring ? 'Edit Recurring Rule' : 'Edit Transaction';
             document.getElementById('editModalOverlay').classList.add('open');
         }
-
         function closeEditModal() {
             document.getElementById('editModalOverlay').classList.remove('open');
             editingId = null;
@@ -2329,7 +2075,6 @@
 
         // ========== OVERVIEW ==========
         let currentPeriod = 'monthly';
-
         function renderOverview() {
             const acc = getActiveAccount();
             if (!acc) return;
@@ -2340,8 +2085,7 @@
             const todayKey = formatDate(today);
             document.getElementById('ovTotalBalance').textContent = `${acc.currency} ${getTotalBalance().toFixed(2)}`;
             document.getElementById('ovBalance').textContent = `${acc.currency} ${getBalanceAtEndOfDay(data.activeAccountId, todayKey).toFixed(2)}`;
-            let income = 0,
-                expense = 0;
+            let income = 0, expense = 0;
             const startDate = parseDate(range.start);
             const endDate = parseDate(range.end);
             acc.transactions.forEach(t => {
@@ -2369,11 +2113,8 @@
             drawChart(period);
             renderMonthEndBalances();
         }
-
         function getPeriodRange(period, baseDate, weekStart) {
-            const year = baseDate.getFullYear(),
-                month = baseDate.getMonth(),
-                date = baseDate.getDate();
+            const year = baseDate.getFullYear(), month = baseDate.getMonth(), date = baseDate.getDate();
             if (period === 'weekly') {
                 const diff = (baseDate.getDay() - weekStart + 7) % 7;
                 const monday = new Date(baseDate);
@@ -2386,7 +2127,6 @@
                 return { start: dateToKey(year, month, 1), end: dateToKey(year, month, getDaysInMonth(year, month)) };
             return { start: dateToKey(year, 0, 1), end: dateToKey(year, 11, 31) };
         }
-
         function drawChart(period) {
             const acc = getActiveAccount();
             if (!acc) return;
@@ -2411,7 +2151,6 @@
             const maxPoints = period === 'weekly' ? 7 : period === 'monthly' ? Math.min(daysDiff, 31) : Math.min(daysDiff, 365);
             const step = Math.max(1, Math.ceil(daysDiff / maxPoints));
             let points = [];
-            // Use a cache for balances to speed up chart drawing
             const balanceCache = new Map();
             const getBal = (dateKey) => {
                 if (!balanceCache.has(dateKey)) balanceCache.set(dateKey, getBalanceAtEndOfDay(data.activeAccountId, dateKey));
@@ -2597,7 +2336,6 @@
             document.getElementById('setStartBalance').value = acc.startBalance || 0;
             document.getElementById('setWeekStart').value = acc.weekStart !== undefined ? acc.weekStart : 1;
         }
-
         function saveSettings() {
             const acc = getActiveAccount();
             if (!acc) return;
@@ -2690,20 +2428,11 @@
             if (isNaN(prev) || isNaN(current) || calculator.operation === null) return;
             let result;
             switch (calculator.operation) {
-                case '+':
-                    result = prev + current;
-                    break;
-                case '-':
-                    result = prev - current;
-                    break;
-                case '*':
-                    result = prev * current;
-                    break;
-                case '/':
-                    result = prev / current;
-                    break;
-                default:
-                    return;
+                case '+': result = prev + current; break;
+                case '-': result = prev - current; break;
+                case '*': result = prev * current; break;
+                case '/': result = prev / current; break;
+                default: return;
             }
             calculator.currentValue = result.toString();
             calculator.operation = null;
@@ -2724,19 +2453,10 @@
         function handleMemoryOperation(op) {
             const current = parseFloat(calculator.currentValue);
             switch (op) {
-                case 'MC':
-                    calculator.memory = 0;
-                    break;
-                case 'MR':
-                    calculator.currentValue = calculator.memory.toString();
-                    calculator.waitingForOperand = false;
-                    break;
-                case 'M+':
-                    calculator.memory += current;
-                    break;
-                case 'M-':
-                    calculator.memory -= current;
-                    break;
+                case 'MC': calculator.memory = 0; break;
+                case 'MR': calculator.currentValue = calculator.memory.toString(); calculator.waitingForOperand = false; break;
+                case 'M+': calculator.memory += current; break;
+                case 'M-': calculator.memory -= current; break;
             }
             updateCalculatorDisplay();
         }
@@ -2833,7 +2553,6 @@
             contentDiv.querySelector('.rename-tab-btn').addEventListener('click', () => renameTab(tabId));
             contentDiv.querySelector('.delete-salary-btn').addEventListener('click', () => deleteSalaryTab(tabId));
             tabBtn.addEventListener('click', () => switchCalcTab(tabId));
-            // Activate the new tab
             document.querySelectorAll('.calc-tab').forEach(t => t.classList.remove('active'));
             tabBtn.classList.add('active');
             document.querySelectorAll('.calc-content').forEach(c => c.classList.remove('active'));
@@ -2852,25 +2571,20 @@
         }
 
         function initializeCalcTabs() {
-            // Use event delegation to avoid double-binding
             const tabsContainer = document.getElementById('calcTabs');
-            // Remove old listener and add fresh one
             const newTabsContainer = tabsContainer.cloneNode(true);
             tabsContainer.parentNode.replaceChild(newTabsContainer, tabsContainer);
             newTabsContainer.querySelectorAll('.calc-tab').forEach(tab => {
                 tab.addEventListener('click', () => switchCalcTab(tab.dataset.tab));
             });
-            // Bind rename and delete buttons via delegation
             newTabsContainer.addEventListener('click', (e) => {
                 const renameBtn = e.target.closest('.rename-tab-btn');
                 const deleteBtn = e.target.closest('.delete-salary-btn');
                 if (renameBtn) renameTab(renameBtn.dataset.tab);
                 if (deleteBtn) deleteSalaryTab(deleteBtn.dataset.tab);
             });
-            // Bind addCalcTab
             const addBtn = newTabsContainer.querySelector('#addCalcTab');
             if (addBtn) addBtn.addEventListener('click', addNewSalaryTab);
-            // Bind salary buttons via delegation on the calculator wrapper
             const calcWrapper = document.querySelector('#viewCalculator .calculator-wrapper');
             const newCalcWrapper = calcWrapper.cloneNode(true);
             calcWrapper.parentNode.replaceChild(newCalcWrapper, calcWrapper);
@@ -2886,7 +2600,6 @@
             newCalcWrapper.querySelectorAll('.delete-salary-btn').forEach(btn => {
                 btn.addEventListener('click', () => deleteSalaryTab(btn.dataset.tab));
             });
-            // Re-bind tab clicks after clone
             newCalcWrapper.querySelectorAll('.calc-tab').forEach(tab => {
                 tab.addEventListener('click', () => switchCalcTab(tab.dataset.tab));
             });
@@ -2899,7 +2612,6 @@
             }
             const acc = getActiveAccount();
             if (!acc) return;
-            // Standard calculator buttons
             document.querySelectorAll('#standardCalc .num-btn').forEach(btn => btn.addEventListener('click', () => handleNumberInput(btn.dataset.value)));
             document.querySelectorAll('#standardCalc .op-btn[data-op]').forEach(btn => btn.addEventListener('click', () => handleOperation(btn.dataset.op)));
             document.querySelector('#standardCalc .equals-btn').addEventListener('click', () => performCalculation());
@@ -2908,21 +2620,17 @@
             document.getElementById('memoryRecall').addEventListener('click', () => handleMemoryOperation('MR'));
             document.getElementById('memoryAdd').addEventListener('click', () => handleMemoryOperation('M+'));
             document.getElementById('memorySubtract').addEventListener('click', () => handleMemoryOperation('M-'));
-            // Salary calculator buttons
             document.querySelectorAll('[id^="calculateSalary"]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const num = btn.id.replace('calculateSalary', '');
                     calculateSalary(num);
                 });
             });
-            // Tab switching
             document.querySelectorAll('.calc-tab').forEach(tab => {
                 tab.addEventListener('click', () => switchCalcTab(tab.dataset.tab));
             });
-            // Rename / delete
             document.querySelectorAll('.rename-tab-btn').forEach(btn => btn.addEventListener('click', () => renameTab(btn.dataset.tab)));
             document.querySelectorAll('.delete-salary-btn').forEach(btn => btn.addEventListener('click', () => deleteSalaryTab(btn.dataset.tab)));
-            // Add tab
             document.getElementById('addCalcTab').addEventListener('click', addNewSalaryTab);
             updateCalculatorDisplay();
             calculatorInitialized = true;
@@ -2936,28 +2644,33 @@
             const map = { viewCalendar: 'calendar', viewRecurring: 'recurring', viewCalculator: 'calculator', viewSettings: 'settings' };
             const navBtn = document.querySelector(`.bottom-nav-item[data-view="${map[viewId]}"]`);
             if (navBtn) navBtn.classList.add('active');
-            if (viewId === 'viewCalendar') { renderCalendar();
-                renderOverview(); } else if (viewId === 'viewRecurring') renderRecurring();
+            if (viewId === 'viewCalendar') { renderCalendar(); renderOverview(); }
+            else if (viewId === 'viewRecurring') renderRecurring();
             else if (viewId === 'viewCalculator') initializeCalculator();
-            else if (viewId === 'viewSettings') { loadSettingsUI();
-                renderAccountList(); }
+            else if (viewId === 'viewSettings') { loadSettingsUI(); renderAccountList(); }
         }
-        document.querySelectorAll('.bottom-nav-item').forEach(btn => btn.addEventListener('click', () => {
-            const map = { calendar: 'viewCalendar', recurring: 'viewRecurring', calculator: 'viewCalculator', settings: 'viewSettings' };
-            navigateTo(map[btn.dataset.view]);
-        }));
+
+        document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const viewMap = { calendar: 'viewCalendar', recurring: 'viewRecurring', calculator: 'viewCalculator' };
+                navigateTo(viewMap[btn.dataset.view]);
+            });
+        });
+
+        document.getElementById('topSettingsBtn').addEventListener('click', () => {
+            navigateTo('viewSettings');
+        });
+
         document.getElementById('fabAdd').addEventListener('click', () => openModal('income'));
         document.getElementById('prevMonth').addEventListener('click', () => {
             currentMonth--;
-            if (currentMonth < 0) { currentMonth = 11;
-                currentYear--; }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
             calendarCache = null;
             renderCalendar();
         });
         document.getElementById('nextMonth').addEventListener('click', () => {
             currentMonth++;
-            if (currentMonth > 11) { currentMonth = 0;
-                currentYear++; }
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
             calendarCache = null;
             renderCalendar();
         });
@@ -2985,10 +2698,9 @@
         function renderAll() {
             const activeView = document.querySelector('.view.active');
             if (!activeView) return;
-            if (activeView.id === 'viewCalendar') { renderCalendar();
-                renderOverview(); } else if (activeView.id === 'viewRecurring') renderRecurring();
-            else if (activeView.id === 'viewSettings') { loadSettingsUI();
-                renderAccountList(); }
+            if (activeView.id === 'viewCalendar') { renderCalendar(); renderOverview(); }
+            else if (activeView.id === 'viewRecurring') renderRecurring();
+            else if (activeView.id === 'viewSettings') { loadSettingsUI(); renderAccountList(); }
             updateAccountSelector();
         }
 
