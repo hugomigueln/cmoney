@@ -1,0 +1,3020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finance Calendar</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        :root {
+            --bg: #07070a;
+            --surface: #101116;
+            --surface-2: #15161c;
+            --surface-3: #1b1c23;
+            --text: #f7f7fb;
+            --muted: #9699a8;
+            --line: #292b35;
+            --primary: #9b7cff;
+            --income: #43d98b;
+            --expense: #ff6b7a;
+            --shadow: 0 20px 60px rgba(0, 0, 0, .35);
+            --r: 18px;
+            --r-lg: 26px;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 10% -10%, rgba(155, 124, 255, .12), transparent 28rem),
+                radial-gradient(circle at 100% 0%, rgba(67, 217, 139, .06), transparent 22rem),
+                var(--bg);
+            font: 15px/1.5 Inter, system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 120px;
+            overflow-x: hidden;
+        }
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+        button {
+            color: inherit;
+            cursor: pointer;
+        }
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible {
+            outline: 3px solid rgba(155, 124, 255, .35);
+            outline-offset: 2px;
+        }
+        .app {
+            width: min(1500px, 100%);
+            margin: auto;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: rgba(16, 17, 22, .82);
+            backdrop-filter: blur(18px);
+            border: 1px solid var(--line);
+            border-radius: var(--r-lg);
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 50;
+        }
+        .account-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            padding: 5px 8px 5px 12px;
+            border-radius: 999px;
+            transition: border-color .2s;
+        }
+        .account-selector:focus-within {
+            border-color: var(--primary);
+        }
+        .account-selector label {
+            font-size: .72rem;
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            white-space: nowrap;
+        }
+        .account-selector select {
+            border: 0;
+            background: transparent;
+            color: var(--text);
+            font-weight: 700;
+            padding: 7px;
+            min-width: 130px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239699a8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+            padding-right: 24px;
+        }
+        .account-selector select option {
+            background: var(--surface-2);
+            color: var(--text);
+        }
+        .account-selector button,
+        .close-btn {
+            border: 1px solid var(--line);
+            background: var(--surface-3);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: .2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .account-selector button:hover,
+        .close-btn:hover {
+            transform: translateY(-1px);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .view {
+            display: none;
+            animation: fadeUp .28s ease;
+        }
+        .view.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+        .calendar-wrapper,
+        .overview-section,
+        .recurring-header,
+        .settings-group,
+        .calculator-wrapper {
+            background: linear-gradient(180deg, rgba(21, 22, 28, .96), rgba(15, 16, 21, .96));
+            border: 1px solid var(--line);
+            border-radius: var(--r-lg);
+            box-shadow: var(--shadow);
+        }
+        .calendar-wrapper,
+        .calculator-wrapper {
+            padding: 24px;
+        }
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+            position: relative;
+            flex-wrap: wrap;
+        }
+        .fab-add-container {
+            position: relative;
+        }
+        .fab-add {
+            padding: 12px 28px;
+            border: 0;
+            border-radius: 999px;
+            background: var(--primary);
+            color: #09080e;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 14px 35px rgba(124, 92, 255, .35);
+            transition: .2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .fab-add:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 18px 45px rgba(124, 92, 255, .5);
+        }
+        .calculator-header {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .calculator-header h2 {
+            margin: 0;
+            font-size: 1.35rem;
+            letter-spacing: -.04em;
+        }
+        .calc-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 8px;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            scrollbar-width: thin;
+            scrollbar-color: var(--line) transparent;
+        }
+        .calc-tab {
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: .2s;
+            color: var(--muted);
+            font-weight: 700;
+            font-size: .85rem;
+            border: 1px solid transparent;
+            white-space: nowrap;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+            background: var(--surface-2);
+        }
+        .calc-tab:hover {
+            color: var(--text);
+            background: var(--surface-3);
+        }
+        .calc-tab.active {
+            color: var(--primary);
+            background: rgba(155, 124, 255, .12);
+            border-color: var(--primary);
+        }
+        .calc-content {
+            display: none;
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 12px;
+            animation: fadeUp .2s ease;
+        }
+        .calc-content.active {
+            display: block;
+        }
+        .calculator-display {
+            background: var(--surface-3);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .memory-display {
+            font-size: .85rem;
+            color: var(--muted);
+            height: 20px;
+            opacity: .5;
+            transition: .2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .memory-label {
+            font-size: .75rem;
+        }
+        .memory-value {
+            font-weight: 700;
+        }
+        .main-display {
+            font-size: 2.5rem;
+            font-weight:800;
+            letter-spacing: -.04em;
+            margin-top: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+        .calculator-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .button-row {
+            display: flex;
+            gap: 10px;
+        }
+        .calc-btn {
+            flex: 1;
+            padding: 16px 0;
+            border: 1px solid var(--line);
+            background: var(--surface-3);
+            border-radius: 14px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            user-select: none;
+        }
+        .calc-btn:hover {
+            background: var(--surface-2);
+            border-color: #3a3c49;
+        }
+        .calc-btn:active {
+            transform: scale(.95);
+        }
+        .num-btn {
+            background: rgba(255, 255, 255, .03);
+        }
+        .op-btn {
+            background: rgba(155, 124, 255, .10);
+            color: var(--primary);
+        }
+        .equals-btn {
+            background: var(--primary);
+            color: #08070d;
+        }
+        .equals-btn:hover {
+            background: #b29bff;
+        }
+        .memory-btn {
+            background: rgba(255, 107, 122, .07);
+            color: var(--expense);
+            font-size: .9rem;
+        }
+        .clear-btn {
+            background: rgba(255, 107, 122, .10);
+            color: var(--expense);
+        }
+        .zero-btn {
+            flex: 2;
+        }
+        .salary-form {
+            background: var(--surface-3);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+        }
+        .form-row {
+            margin-bottom: 14px;
+        }
+        .form-row label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--muted);
+            font-size: .74rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+        }
+        .form-row input {
+            width: 100%;
+            border: 1px solid var(--line);
+            background: var(--surface-2);
+            color: var(--text);
+            border-radius: 12px;
+            padding: 12px 14px;
+            min-height: 42px;
+            font-size: 1rem;
+            transition: border-color .2s;
+        }
+        .form-row input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        .result-display {
+            margin-top: 16px;
+            padding: 18px;
+            background: rgba(155, 124, 255, .08);
+            border: 1px solid rgba(155, 124, 255, .3);
+            border-radius: 14px;
+            text-align: center;
+            animation: fadeUp .3s ease;
+        }
+        .result-value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -.04em;
+            color: var(--primary);
+        }
+        .result-label {
+            font-size: .78rem;
+            color: var(--muted);
+            font-weight: 700;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+        }
+        .salary-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .salary-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text);
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .tab-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .rename-tab-btn {
+            background: rgba(155, 124, 255, .1);
+            border: 1px solid rgba(155, 124, 255, .3);
+            color: var(--primary);
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .2s;
+            font-weight: 700;
+            font-size: .75rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .rename-tab-btn:hover {
+            background: rgba(155, 124, 255, .15);
+        }
+        .delete-salary-btn {
+            background: rgba(255, 107, 122, .1);
+            border: 1px solid rgba(255, 107, 122, .3);
+            color: var(--expense);
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .2s;
+            font-weight: 700;
+            font-size: .75rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .delete-salary-btn:hover {
+            background: rgba(255, 107, 122, .2);
+        }
+        .add-tab-btn {
+            background: transparent;
+            border: 1px dashed var(--line);
+            color: var(--muted);
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: .85rem;
+            transition: .2s;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .add-tab-btn:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        .month-end-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+            max-height: 180px;
+            overflow-y: auto;
+            padding-right: 4px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--line) transparent;
+        }
+        .month-end-cards::-webkit-scrollbar {
+            width: 4px;
+        }
+        .month-end-cards::-webkit-scrollbar-thumb {
+            background: var(--line);
+            border-radius: 2px;
+        }
+        .month-end-card {
+            padding: 10px 12px;
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: .8rem;
+            transition: border-color .2s;
+        }
+        .month-end-card:hover {
+            border-color: #3a3c49;
+        }
+        .month-end-label {
+            color: var(--muted);
+            font-weight: 700;
+            font-size: .72rem;
+        }
+        .month-end-value {
+            font-weight: 800;
+            color: var(--text);
+            font-variant-numeric: tabular-nums;
+        }
+        .month-end-value.positive {
+            color: var(--income);
+        }
+        .month-end-value.negative {
+            color: var(--expense);
+        }
+        .month-year {
+            font-size: clamp(1.35rem, 2vw, 1.9rem);
+            font-weight: 800;
+            letter-spacing: -.04em;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 7px;
+        }
+        .nav-buttons button,
+        .btn-secondary {
+            border: 1px solid var(--line);
+            background: var(--surface-2);
+            color: var(--text);
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-buttons button:hover,
+        .btn-secondary:hover {
+            background: var(--surface-3);
+            border-color: #3a3c49;
+        }
+        .nav-buttons .today-btn,
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #08070d;
+        }
+        .nav-buttons .today-btn:hover,
+        .btn-primary:hover {
+            background: #b29bff;
+        }
+        .weekdays,
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 8px;
+        }
+        .weekdays {
+            margin-bottom: 8px;
+            color: var(--muted);
+            font-size: .7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+        .weekdays div {
+            text-align: center;
+            padding: 6px;
+        }
+        .day-cell {
+            min-height: 118px;
+            padding: 10px;
+            background: rgba(255, 255, 255, .025);
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: .2s ease;
+            overflow: hidden;
+        }
+        .day-cell:hover {
+            transform: translateY(-2px);
+            border-color: rgba(155, 124, 255, .7);
+            background: rgba(155, 124, 255, .055);
+        }
+        .day-cell.empty {
+            background: transparent;
+            border-color: transparent;
+            cursor: default;
+            min-height: 0;
+        }
+        .day-cell.empty:hover {
+            transform: none;
+            border-color: transparent;
+            background: transparent;
+        }
+        .day-cell.today {
+            border-color: var(--primary);
+            box-shadow: inset 0 0 0 1px rgba(155, 124, 255, .2);
+            background: rgba(155, 124, 255, .09);
+        }
+        .day-number {
+            font-weight: 800;
+            font-size: .82rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .today-marker {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(155, 124, 255, .6);
+            }
+            50% {
+                box-shadow: 0 0 0 4px rgba(155, 124, 255, 0);
+            }
+        }
+        .indicators {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        .income-dot,
+        .expense-dot {
+            padding: 3px 7px;
+            border-radius: 8px;
+            font-size: .62rem;
+            font-weight: 800;
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            font-variant-numeric: tabular-nums;
+        }
+        .income-dot {
+            color: var(--income);
+            background: rgba(67, 217, 139, .10);
+        }
+        .expense-dot {
+            color: var(--expense);
+            background: rgba(255, 107, 122, .10);
+        }
+        .day-balance {
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, .07);
+            text-align: right;
+            font-size: .7rem;
+            color: var(--muted);
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-variant-numeric: tabular-nums;
+        }
+        .overview-section {
+            margin-top: 20px;
+            padding: 24px;
+        }
+        .overview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .overview-header h2 {
+            margin: 0;
+            font-size: 1.15rem;
+            letter-spacing: -.03em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .overview-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: .8rem;
+            font-weight: 700;
+        }
+        .overview-controls select,
+        .settings-row select,
+        .settings-row input,
+        .modal input,
+        .modal select,
+        .add-account-form input {
+            border: 1px solid var(--line);
+            background: var(--surface-2);
+            color: var(--text);
+            border-radius: 12px;
+            padding: 10px 12px;
+            min-height: 42px;
+            transition: border-color .2s;
+        }
+        .overview-controls select:focus,
+        .settings-row select:focus,
+        .settings-row input:focus,
+        .modal input:focus,
+        .modal select:focus,
+        .add-account-form input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        .overview-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .overview-card {
+            min-height: 118px;
+            padding: 18px;
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            transition: .2s ease;
+        }
+        .overview-card:hover {
+            transform: translateY(-2px);
+            border-color: #383a47;
+        }
+        .overview-card .label {
+            font-size: .68rem;
+            color: var(--muted);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .overview-card .value {
+            margin-top: auto;
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -.04em;
+            font-variant-numeric: tabular-nums;
+        }
+        .positive {
+            color: var(--income);
+        }
+        .negative {
+            color: var(--expense);
+        }
+        .neutral {
+            color: var(--text);
+        }
+        .chart-container {
+            padding: 16px;
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            margin-top: 14px;
+        }
+        .chart-title {
+            font-size: .8rem;
+            color: var(--muted);
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        canvas#balanceChart {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .recurring-header,
+        .settings-group {
+            padding: 22px;
+            margin-bottom: 16px;
+        }
+        .recurring-header h2,
+        .settings-group h3 {
+            margin: 0 0 5px;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .recurring-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: .82rem;
+        }
+        .recurring-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .recurring-item,
+        .account-item {
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: border-color .2s;
+        }
+        .recurring-item:hover,
+        .account-item:hover {
+            border-color: #3a3c49;
+        }
+        .recurring-item .info,
+        .account-item>div:first-child {
+            min-width: 0;
+            flex: 1;
+        }
+        .recurring-item .title,
+        .account-item .name {
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .recurring-item .meta {
+            font-size: .72rem;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+        .recurring-item .amount {
+            font-weight: 800;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .actions button,
+        .small-btn,
+        .danger-btn {
+            border: 1px solid var(--line);
+            background: var(--surface-3);
+            padding: 7px 10px;
+            border-radius: 10px;
+            font-size: .72rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .actions button:hover,
+        .small-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .badge,
+        .cat {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            margin-left: 7px;
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: rgba(155, 124, 255, .12);
+            color: var(--primary);
+            font-size: .62rem;
+            font-weight: 800;
+        }
+        .add-recurring-btn {
+            width: 100%;
+            padding: 13px;
+            border: 1px dashed #3b3d48;
+            border-radius: 14px;
+            background: transparent;
+            color: var(--primary);
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .add-recurring-btn:hover {
+            border-color: var(--primary);
+            background: rgba(155, 124, 255, .05);
+        }
+        .settings-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .settings-row label {
+            width: 150px;
+            color: var(--muted);
+            font-size: .8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .settings-row input,
+        .settings-row select {
+            flex: 1;
+            min-width: 120px;
+        }
+        .account-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .add-account-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .add-account-form input {
+            flex: 1;
+        }
+        .add-account-form button {
+            border: 0;
+            background: var(--primary);
+            color: #08070d;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s;
+            white-space: nowrap;
+        }
+        .add-account-form button:hover {
+            background: #b29bff;
+        }
+        .danger-btn {
+            color: var(--expense);
+            background: rgba(255, 107, 122, .08);
+            border-color: rgba(255, 107, 122, .2);
+            margin-top: 8px;
+        }
+        .danger-btn:hover {
+            background: rgba(255, 107, 122, .15);
+            border-color: var(--expense);
+        }
+        .side-panel {
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            right: 0;
+            width: min(480px, 100vw);
+            height: 100dvh;
+            padding: 24px;
+            background: rgba(13, 14, 18, .98);
+            border-left: 1px solid var(--line);
+            box-shadow: -30px 0 70px rgba(0, 0, 0, .45);
+            overflow: auto;
+            transform: translateX(105%);
+            transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+        }
+        .side-panel.open {
+            transform: none;
+        }
+        .side-panel-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: rgba(0, 0, 0, .55);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+        }
+        .side-panel-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .panel-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .panel-header h2 {
+            margin: 0;
+            font-size: 1.35rem;
+            letter-spacing: -.04em;
+        }
+        #panelDaySub {
+            color: var(--muted);
+            font-size: .78rem;
+            margin: 3px 0 14px;
+        }
+        .panel-balance {
+            padding: 15px;
+            border: 1px solid var(--line);
+            background: var(--surface-2);
+            border-radius: 16px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-variant-numeric: tabular-nums;
+        }
+        .transaction-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 10px;
+            align-items: center;
+            padding: 11px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background .2s;
+        }
+        .transaction-item:hover {
+            background: var(--surface-2);
+        }
+        .desc {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .name {
+            font-weight: 700;
+            display: inline;
+        }
+        .emoji-badge {
+            margin-right: 7px;
+        }
+        .amount {
+            font-weight: 800;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+        .amount.income {
+            color: var(--income);
+        }
+        .amount.expense {
+            color: var(--expense);
+        }
+        .tx-actions {
+            display: flex;
+            gap: 4px;
+        }
+        .tx-actions button {
+            border: 0;
+            background: transparent;
+            cursor: pointer;
+            opacity: .7;
+            transition: .2s;
+            padding: 4px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tx-actions button:hover {
+            opacity: 1;
+            background: var(--surface-3);
+        }
+        .empty-state {
+            padding: 28px 8px;
+            color: var(--muted);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: .9rem;
+        }
+        .add-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .add-btns button {
+            border: 1px solid var(--line);
+            padding: 12px;
+            border-radius: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: .85rem;
+        }
+        .btn-income {
+            background: rgba(67, 217, 139, .09);
+            color: var(--income);
+        }
+        .btn-income:hover {
+            background: rgba(67, 217, 139, .18);
+            border-color: var(--income);
+        }
+        .btn-expense {
+            background: rgba(255, 107, 122, .09);
+            color: var(--expense);
+        }
+        .btn-expense:hover {
+            background: rgba(255, 107, 122, .18);
+            border-color: var(--expense);
+        }
+        .btn-recurring-income {
+            background: rgba(155, 124, 255, .10);
+            color: var(--primary);
+        }
+        .btn-recurring-income:hover {
+            background: rgba(155, 124, 255, .18);
+            border-color: var(--primary);
+        }
+        .btn-recurring-expense {
+            background: rgba(255, 107, 122, .07);
+            color: var(--expense);
+        }
+        .btn-recurring-expense:hover {
+            background: rgba(255, 107, 122, .15);
+            border-color: var(--expense);
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0, 0, 0, .72);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal {
+            width: min(480px, 100%);
+            max-height: 92dvh;
+            overflow: auto;
+            padding: 24px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            box-shadow: 0 35px 90px rgba(0, 0, 0, .55);
+            animation: modalIn .2s ease;
+        }
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(.98);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+        .modal h2 {
+            margin: 0 0 16px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal label {
+            display: block;
+            margin: 12px 0 5px;
+            color: var(--muted);
+            font-size: .74rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+        }
+        .modal input,
+        .modal select {
+            width: 100%;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .modal-actions button {
+            flex: 1;
+            border: 0;
+            padding: 11px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-danger {
+            background: rgba(255, 107, 122, .1);
+            color: var(--expense);
+        }
+        .btn-danger:hover {
+            background: rgba(255, 107, 122, .2);
+        }
+        .bottom-nav {
+            position: fixed;
+            z-index: 110;
+            left: 50%;
+            bottom: 18px;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 3px;
+            padding: 8px;
+            background: rgba(16, 17, 22, .84);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 22px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, .5);
+        }
+        .bottom-nav-item {
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            padding: 14px 22px;
+            border-radius: 16px;
+            font-size: .9rem;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .bottom-nav-item:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, .05);
+        }
+        .bottom-nav-item.active {
+            background: rgba(155, 124, 255, .14);
+            color: var(--primary);
+        }
+        .toast {
+            position: fixed;
+            z-index: 3000;
+            left: 50%;
+            bottom: 108px;
+            transform: translate(-50%, 20px);
+            opacity: 0;
+            pointer-events: none;
+            padding: 10px 16px;
+            border: 1px solid var(--line);
+            background: var(--surface-3);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            font-weight: 700;
+            font-size: .8rem;
+            transition: .25s ease;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+        @media (max-width: 900px) {
+            .overview-cards {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+            .day-cell {
+                min-height: 100px;
+            }
+            .calculator-display {
+                padding: 16px;
+            }
+            .main-display {
+                font-size: 2rem;
+            }
+            .calc-btn {
+                padding: 14px 0;
+                font-size: 1.1rem;
+            }
+            .salary-form {
+                padding: 16px;
+            }
+            .form-row input {
+                padding: 10px;
+                font-size: .95rem;
+            }
+            .month-end-cards {
+                max-height: 150px;
+            }
+            .calc-tabs {
+                overflow-x: auto;
+            }
+            .salary-title {
+                font-size: 1rem;
+            }
+            .tab-actions {
+                flex-wrap: wrap;
+            }
+        }
+        @media (max-width: 650px) {
+            body {
+                padding-bottom: 120px;
+            }
+            .app {
+                padding: 10px;
+                gap: 10px;
+            }
+            .top-bar {
+                border-radius: 15px;
+                padding: 10px;
+            }
+            .calendar-wrapper,
+            .overview-section,
+            .recurring-header,
+            .settings-group,
+            .calculator-wrapper {
+                padding: 14px;
+                border-radius: 18px;
+            }
+            .calendar-header {
+                align-items: flex-start;
+            }
+            .month-year {
+                font-size: 1.2rem;
+            }
+            .nav-buttons button {
+                padding: 8px 10px;
+                font-size: .8rem;
+            }
+            .weekdays,
+            .days-grid {
+                gap: 4px;
+            }
+            .weekdays {
+                font-size: .56rem;
+            }
+            .day-cell {
+                min-height: 78px;
+                padding: 7px;
+                border-radius: 11px;
+            }
+            .day-number {
+                font-size: .75rem;
+            }
+            .indicators {
+                gap: 2px;
+                margin-top: 4px;
+            }
+            .income-dot,
+            .expense-dot {
+                padding: 2px 4px;
+                font-size: .5rem;
+            }
+            .day-balance {
+                font-size: .55rem;
+                padding-top: 6px;
+            }
+            .overview-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+            .overview-cards {
+                grid-template-columns: 1fr 1fr;
+                gap: 7px;
+            }
+            .overview-card {
+                min-height: 92px;
+                padding: 12px;
+            }
+            .overview-card .value {
+                font-size: 1rem;
+            }
+            .settings-row {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .settings-row label {
+                width: auto;
+            }
+            .add-account-form {
+                flex-direction: column;
+            }
+            .recurring-item {
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+            .recurring-item .actions {
+                margin-left: auto;
+            }
+            .bottom-nav {
+                bottom: 12px;
+                max-width: calc(100vw - 20px);
+                width: max-content;
+                padding: 8px;
+            }
+            .bottom-nav-item {
+                padding: 12px 16px;
+                font-size: .8rem;
+            }
+            .calculator-display {
+                padding: 14px;
+            }
+            .main-display {
+                font-size: 1.8rem;
+            }
+            .calc-btn {
+                padding: 12px 0;
+                font-size: 1rem;
+            }
+            .button-row {
+                gap: 6px;
+            }
+            .calc-tabs {
+                gap: 6px;
+            }
+            .calc-tab {
+                padding: 6px 12px;
+                font-size: .8rem;
+            }
+            .month-end-card {
+                padding: 10px;
+                font-size: .8rem;
+            }
+            .salary-title {
+                font-size: .9rem;
+            }
+            .tab-actions {
+                gap: 4px;
+            }
+            .fab-add {
+                padding: 10px 18px;
+                font-size: .85rem;
+            }
+            .add-btns {
+                grid-template-columns: 1fr;
+            }
+            .result-value {
+                font-size: 1.5rem;
+            }
+        }
+        @media (max-width: 390px) {
+            .overview-cards {
+                grid-template-columns: 1fr;
+            }
+            .day-cell {
+                min-height: 66px;
+                padding: 5px;
+            }
+            .day-number {
+                font-size: .65rem;
+            }
+            .income-dot,
+            .expense-dot {
+                font-size: .45rem;
+                padding: 1px 3px;
+            }
+            .day-balance {
+                font-size: .48rem;
+            }
+            .bottom-nav-item {
+                padding: 10px 12px;
+                font-size: .75rem;
+            }
+            .main-display {
+                font-size: 1.5rem;
+            }
+            .calc-btn {
+                padding: 10px 0;
+                font-size: .9rem;
+            }
+            .calc-tab {
+                padding: 4px 10px;
+                font-size: .75rem;
+            }
+            .month-end-card {
+                padding: 8px;
+                font-size: .75rem;
+            }
+            .salary-title {
+                font-size: .85rem;
+            }
+            .tab-actions {
+                gap: 4px;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *:before,
+            *:after {
+                scroll-behavior: auto !important;
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+        iconify-icon {
+            display: inline-flex;
+            width: 1.1em;
+            height: 1.1em;
+            vertical-align: -.18em;
+            flex: 0 0 auto;
+        }
+        .emoji-badge {
+            width: 28px;
+            height: 28px;
+            margin-right: 7px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            background: rgba(155, 124, 255, .10);
+            color: var(--primary);
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+        .tx-actions button,
+        .actions button,
+        .nav-buttons button,
+        .account-selector button,
+        .fab-add,
+        .bottom-nav-item {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tx-actions iconify-icon,
+        .actions iconify-icon {
+            width: 15px;
+            height: 15px;
+        }
+        .fab-add iconify-icon {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+</head>
+<body>
+    <div class="app" id="app">
+        <div class="toast" id="toast"></div>
+        <div class="top-bar">
+            <div class="account-selector">
+                <label for="accountSelect">Account</label>
+                <select id="accountSelect"></select>
+                <button id="quickAddAccount" title="New account" aria-label="Create new account"><iconify-icon icon="lucide:plus" aria-hidden="true"></iconify-icon></button>
+            </div>
+        </div>
+
+        <section class="view active" id="viewCalendar">
+            <div class="calendar-wrapper">
+                <div class="calendar-header">
+                    <div class="month-year" id="monthYear">August 2026</div>
+                    <div class="nav-buttons">
+                        <button id="prevMonth" aria-label="Previous month"><iconify-icon icon="lucide:chevron-left"></iconify-icon></button>
+                        <button class="today-btn" id="todayBtn">Today</button>
+                        <button id="nextMonth" aria-label="Next month"><iconify-icon icon="lucide:chevron-right"></iconify-icon></button>
+                    </div>
+                    <div class="fab-add-container">
+                        <button class="fab-add" id="fabAdd" title="Add transaction"><iconify-icon icon="lucide:plus"></iconify-icon> Add</button>
+                    </div>
+                </div>
+                <div class="weekdays" id="weekdaysContainer"></div>
+                <div class="days-grid" id="daysGrid"></div>
+            </div>
+            <div class="overview-section">
+                <div class="overview-header">
+                    <h2><iconify-icon icon="lucide:chart-no-axes-combined" aria-hidden="true"></iconify-icon> Overview</h2>
+                    <div class="overview-controls">
+                        <label for="periodSelect">Period:</label>
+                        <select id="periodSelect">
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly" selected>Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overview-cards">
+                    <div class="overview-card">
+                        <div class="label"><iconify-icon icon="lucide:wallet" aria-hidden="true"></iconify-icon> Total Available</div>
+                        <div class="value neutral" id="ovTotalBalance">0</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="label"><iconify-icon icon="lucide:wallet" aria-hidden="true"></iconify-icon> Current Balance</div>
+                        <div class="value neutral" id="ovBalance">0</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="label"><iconify-icon icon="lucide:trending-up" aria-hidden="true"></iconify-icon> Income</div>
+                        <div class="value positive" id="ovIncome">0</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="label"><iconify-icon icon="lucide:trending-down" aria-hidden="true"></iconify-icon> Expenses</div>
+                        <div class="value negative" id="ovExpense">0</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="label"><iconify-icon icon="lucide:trending-up" aria-hidden="true"></iconify-icon> Projected Balance</div>
+                        <div class="value neutral" id="ovProjected">0</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="label"><iconify-icon icon="lucide:calendar-days" aria-hidden="true"></iconify-icon> Month-End Balances</div>
+                        <div class="month-end-cards" id="monthEndBalances"></div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title" id="chartTitle"><iconify-icon icon="lucide:chart-no-axes-combined" aria-hidden="true"></iconify-icon> Evolution (Monthly)</div>
+                    <canvas id="balanceChart" height="160"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="view" id="viewRecurring">
+            <div class="recurring-header">
+                <h2><iconify-icon icon="lucide:repeat-2" aria-hidden="true"></iconify-icon> Recurring Rules</h2>
+                <p>Manage recurring incomes and expenses.</p>
+            </div>
+            <div class="recurring-list" id="recurringList"></div>
+            <button class="add-recurring-btn" id="addRecurringBtn"><iconify-icon icon="lucide:plus" aria-hidden="true"></iconify-icon> Add Recurring Rule</button>
+        </section>
+
+        <section class="view" id="viewCalculator">
+            <div class="calculator-wrapper">
+                <div class="calculator-header">
+                    <h2><iconify-icon icon="lucide:calculator" aria-hidden="true"></iconify-icon> Calculator</h2>
+                </div>
+                <div class="calc-tabs" id="calcTabs">
+                    <button class="calc-tab active" data-tab="standard"><iconify-icon icon="lucide:hash"></iconify-icon> Standard</button>
+                    <button class="calc-tab" data-tab="salary1"><iconify-icon icon="lucide:dollar-sign"></iconify-icon> <span class="tab-name">Salary Calc</span></button>
+                    <button class="calc-tab" data-tab="salary2"><iconify-icon icon="lucide:dollar-sign"></iconify-icon> <span class="tab-name">Salary Calc 2</span></button>
+                    <button class="add-tab-btn" id="addCalcTab" title="Add new salary calculator"><iconify-icon icon="lucide:plus"></iconify-icon> Add</button>
+                </div>
+                <div id="standardCalc" class="calc-content active">
+                    <div class="calculator-display">
+                        <div class="memory-display">
+                            <span class="memory-label">Memory</span>
+                            <span class="memory-value" id="memoryDisplay"></span>
+                        </div>
+                        <div class="main-display" id="calculatorDisplay">0</div>
+                    </div>
+                    <div class="calculator-buttons">
+                        <div class="button-row">
+                            <button class="calc-btn memory-btn" id="memoryClear">MC</button>
+                            <button class="calc-btn memory-btn" id="memoryRecall">MR</button>
+                            <button class="calc-btn memory-btn" id="memoryAdd">M+</button>
+                            <button class="calc-btn memory-btn" id="memorySubtract">M−</button>
+                            <button class="calc-btn clear-btn" id="clearAll">AC</button>
+                        </div>
+                        <div class="button-row">
+                            <button class="calc-btn num-btn" data-value="7">7</button>
+                            <button class="calc-btn num-btn" data-value="8">8</button>
+                            <button class="calc-btn num-btn" data-value="9">9</button>
+                            <button class="calc-btn op-btn" data-op="/">÷</button>
+                        </div>
+                        <div class="button-row">
+                            <button class="calc-btn num-btn" data-value="4">4</button>
+                            <button class="calc-btn num-btn" data-value="5">5</button>
+                            <button class="calc-btn num-btn" data-value="6">6</button>
+                            <button class="calc-btn op-btn" data-op="*">×</button>
+                        </div>
+                        <div class="button-row">
+                            <button class="calc-btn num-btn" data-value="1">1</button>
+                            <button class="calc-btn num-btn" data-value="2">2</button>
+                            <button class="calc-btn num-btn" data-value="3">3</button>
+                            <button class="calc-btn op-btn" data-op="-">−</button>
+                        </div>
+                        <div class="button-row">
+                            <button class="calc-btn num-btn zero-btn" data-value="0">0</button>
+                            <button class="calc-btn num-btn" data-value=".">.</button>
+                            <button class="calc-btn op-btn" data-op="+">+</button>
+                            <button class="calc-btn equals-btn" data-op="=">=</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="salary1Calc" class="calc-content">
+                    <div class="salary-header">
+                        <span class="salary-title">Salary Calculator</span>
+                        <div class="tab-actions">
+                            <button class="rename-tab-btn" data-tab="salary1" title="Rename this calculator"><iconify-icon icon="lucide:pencil"></iconify-icon></button>
+                            <button class="delete-salary-btn" data-tab="salary1" title="Delete this calculator"><iconify-icon icon="lucide:trash-2"></iconify-icon></button>
+                        </div>
+                    </div>
+                    <div class="salary-form">
+                        <div class="form-row">
+                            <label for="hourlyRate1">Hourly Rate</label>
+                            <input type="number" id="hourlyRate1" placeholder="0.00" step="0.01" />
+                        </div>
+                        <div class="form-row">
+                            <label for="hoursPerDay1">Hours Per Day</label>
+                            <input type="number" id="hoursPerDay1" placeholder="8" step="0.1" />
+                        </div>
+                        <div class="form-row">
+                            <label for="daysWorked1">Days Worked</label>
+                            <input type="number" id="daysWorked1" placeholder="20" step="1" />
+                        </div>
+                        <button class="calc-btn equals-btn" id="calculateSalary1" style="margin-top:10px; width:100%;">
+                            <iconify-icon icon="lucide:calculator"></iconify-icon> Calculate
+                        </button>
+                    </div>
+                    <div class="result-display" id="salaryResult1" style="display:none;">
+                        <div class="result-value" id="salaryAmount1">$0.00</div>
+                        <div class="result-label">Monthly Salary</div>
+                    </div>
+                </div>
+                <div id="salary2Calc" class="calc-content">
+                    <div class="salary-header">
+                        <span class="salary-title">Salary Calculator 2</span>
+                        <div class="tab-actions">
+                            <button class="rename-tab-btn" data-tab="salary2" title="Rename this calculator"><iconify-icon icon="lucide:pencil"></iconify-icon></button>
+                            <button class="delete-salary-btn" data-tab="salary2" title="Delete this calculator"><iconify-icon icon="lucide:trash-2"></iconify-icon></button>
+                        </div>
+                    </div>
+                    <div class="salary-form">
+                        <div class="form-row">
+                            <label for="hourlyRate2">Hourly Rate</label>
+                            <input type="number" id="hourlyRate2" placeholder="0.00" step="0.01" />
+                        </div>
+                        <div class="form-row">
+                            <label for="hoursPerDay2">Hours Per Day</label>
+                            <input type="number" id="hoursPerDay2" placeholder="8" step="0.1" />
+                        </div>
+                        <div class="form-row">
+                            <label for="daysWorked2">Days Worked</label>
+                            <input type="number" id="daysWorked2" placeholder="20" step="1" />
+                        </div>
+                        <button class="calc-btn equals-btn" id="calculateSalary2" style="margin-top:10px; width:100%;">
+                            <iconify-icon icon="lucide:calculator"></iconify-icon> Calculate
+                        </button>
+                    </div>
+                    <div class="result-display" id="salaryResult2" style="display:none;">
+                        <div class="result-value" id="salaryAmount2">$0.00</div>
+                        <div class="result-label">Monthly Salary</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="view" id="viewSettings">
+            <div class="settings-group">
+                <h3><iconify-icon icon="lucide:users" aria-hidden="true"></iconify-icon> Accounts</h3>
+                <div class="account-list" id="accountList"></div>
+                <div class="add-account-form">
+                    <input type="text" id="newAccountName" placeholder="Account name" />
+                    <button id="createAccountBtn">Create Account</button>
+                </div>
+            </div>
+            <div class="settings-group">
+                <h3><iconify-icon icon="lucide:settings" aria-hidden="true"></iconify-icon> Preferences</h3>
+                <div class="settings-row"><label for="setCurrency">Currency</label><select id="setCurrency"><option>€</option><option>$</option><option>£</option><option>¥</option></select></div>
+                <div class="settings-row"><label for="setStartBalance">Initial Balance</label><input type="number" id="setStartBalance" value="0" /></div>
+                <div class="settings-row"><label for="setWeekStart">First Day of Week</label><select id="setWeekStart"><option value="0">Sunday</option><option value="1" selected>Monday</option></select></div>
+                <div class="settings-row"><label>Export Data</label><button class="small-btn" id="exportDataBtn"><iconify-icon icon="lucide:download"></iconify-icon> Export JSON</button></div>
+            </div>
+            <div class="settings-group">
+                <h3><iconify-icon icon="lucide:trash-2" aria-hidden="true"></iconify-icon> Danger Zone</h3>
+                <button class="danger-btn" id="resetDataBtn"><iconify-icon icon="lucide:alert-triangle"></iconify-icon> Reset All Data</button>
+            </div>
+        </section>
+
+        <div class="bottom-nav" id="bottomNav">
+            <button class="bottom-nav-item active" data-view="calendar"><iconify-icon icon="lucide:calendar"></iconify-icon> Calendar</button>
+            <button class="bottom-nav-item" data-view="recurring"><iconify-icon icon="lucide:repeat-2"></iconify-icon> Recurring</button>
+            <button class="bottom-nav-item" data-view="calculator"><iconify-icon icon="lucide:calculator"></iconify-icon> Calculator</button>
+            <button class="bottom-nav-item" data-view="settings"><iconify-icon icon="lucide:settings"></iconify-icon> Settings</button>
+        </div>
+
+        <div class="side-panel-backdrop" id="sidePanelBackdrop"></div>
+        <div class="side-panel" id="sidePanel">
+            <div class="panel-header"><h2 id="panelDate"></h2><button class="close-btn" id="closePanel" aria-label="Close panel"><iconify-icon icon="lucide:x"></iconify-icon></button></div>
+            <div id="panelDaySub"></div>
+            <div class="panel-balance" id="panelBalance"><iconify-icon icon="lucide:wallet" aria-hidden="true"></iconify-icon> 0</div>
+            <div class="transactions-list" id="panelTransactions"></div>
+            <div class="add-btns">
+                <button class="btn-income" data-type="income" data-recurrence="none"><iconify-icon icon="lucide:plus" aria-hidden="true"></iconify-icon> Income</button>
+                <button class="btn-expense" data-type="expense" data-recurrence="none"><iconify-icon icon="lucide:minus" aria-hidden="true"></iconify-icon> Expense</button>
+                <button class="btn-recurring-income" data-type="income" data-recurrence="monthly"><iconify-icon icon="lucide:repeat-2" aria-hidden="true"></iconify-icon> Monthly Income</button>
+                <button class="btn-recurring-expense" data-type="expense" data-recurrence="monthly"><iconify-icon icon="lucide:repeat-2" aria-hidden="true"></iconify-icon> Monthly Expense</button>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal">
+                <h2 id="modalTitle">Add Income</h2>
+                <label>Type</label><select id="modalType"><option value="income">Income</option><option value="expense">Expense</option></select>
+                <label>Amount</label><input type="number" id="modalValue" step="0.01" placeholder="0.00" />
+                <label>Description</label><input type="text" id="modalDesc" placeholder="e.g., Salary, Rent..." />
+                <label>Category</label><input type="text" id="modalCategory" placeholder="e.g., Work, Food" />
+                <label>Date</label><input type="date" id="modalDate" />
+                <label>Repeat</label><select id="modalRecurrence"><option value="none">Once</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select>
+                <div class="modal-actions"><button class="btn-secondary" id="modalCancel">Cancel</button><button class="btn-primary" id="modalSave">Save</button></div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="editModalOverlay">
+            <div class="modal">
+                <h2 id="editModalTitle">Edit Transaction</h2>
+                <label>Type</label><select id="editType"><option value="income">Income</option><option value="expense">Expense</option></select>
+                <label>Amount</label><input type="number" id="editValue" step="0.01" />
+                <label>Description</label><input type="text" id="editDesc" />
+                <label>Category</label><input type="text" id="editCategory" />
+                <label>Date</label><input type="date" id="editDate" />
+                <div class="modal-actions"><button class="btn-secondary" id="editCancel">Cancel</button><button class="btn-danger" id="editDelete">Delete</button><button class="btn-primary" id="editSave">Update</button></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== DATA & INIT ==========
+        const STORAGE_KEY = 'finance_calendar_data_v3';
+
+        function defaultAccount(name = 'My Account') {
+            return { id: generateId(), name, currency: '€', startBalance: 0, weekStart: 1, transactions: [], recurrences: [] };
+        }
+
+        function defaultData() {
+            const acc = defaultAccount();
+            return { accounts: { [acc.id]: acc }, activeAccountId: acc.id };
+        }
+
+        function generateId() { return Date.now().toString(36) + Math.random().toString(36).substring(2, 6); }
+        let data = loadData();
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (!parsed.accounts || Object.keys(parsed.accounts).length === 0) return defaultData();
+                    if (!parsed.activeAccountId || !parsed.accounts[parsed.activeAccountId])
+                        parsed.activeAccountId = Object.keys(parsed.accounts)[0];
+                    // ensure all accounts have required fields
+                    Object.keys(parsed.accounts).forEach(id => {
+                        const acc = parsed.accounts[id];
+                        if (!acc.currency) acc.currency = '€';
+                        if (acc.startBalance === undefined) acc.startBalance = 0;
+                        if (acc.weekStart === undefined) acc.weekStart = 1;
+                        if (!acc.transactions) acc.transactions = [];
+                        if (!acc.recurrences) acc.recurrences = [];
+                    });
+                    return parsed;
+                }
+            } catch (_) {}
+            return defaultData();
+        }
+
+        function saveData() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.warn(e); }
+        }
+
+        function getActiveAccount() { return data.accounts[data.activeAccountId]; }
+
+        // ========== HELPERS ==========
+        function parseDate(str) { const [y, m, d] = str.split('-').map(Number); return new Date(y, m - 1, d); }
+
+        function formatDate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function getDaysInMonth(year, month) { return new Date(year, month + 1, 0).getDate(); }
+
+        function getFirstDayOfMonth(year, month, weekStart) {
+            const day = new Date(year, month, 1).getDay();
+            return (day - weekStart + 7) % 7;
+        }
+
+        function dateToKey(year, month, day) {
+            return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        }
+
+        function isSameDay(d1, d2) {
+            return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
+        }
+
+        function formatDisplayDate(dateKey) {
+            const [y, m, d] = dateKey.split('-').map(Number);
+            return new Date(y, m - 1, d).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        function getWeekdayName(dateKey) {
+            const [y, m, d] = dateKey.split('-').map(Number);
+            return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(y, m - 1, d).getDay()];
+        }
+
+        // ========== RECURRENCE ENGINE ==========
+        function getOccurrences(rec, from, to) {
+            const occ = [];
+            const start = parseDate(rec.startDate);
+            if (start > to) return occ;
+            const anchorDay = start.getDate();
+            if (rec.recurrence === 'monthly' || rec.recurrence === 'yearly') {
+                const fromDate = from <= start ? start : from;
+                let cursor = new Date(fromDate);
+                let iter = 0;
+                const maxIter = 5000;
+                while (cursor <= to && iter < maxIter) {
+                    let targetDay = anchorDay;
+                    const year = cursor.getFullYear();
+                    const month = cursor.getMonth();
+                    const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+                    if (targetDay > lastDayOfMonth) targetDay = lastDayOfMonth;
+                    const occurrenceDate = new Date(year, month, targetDay);
+                    if (occurrenceDate >= start && occurrenceDate <= to)
+                        occ.push(formatDate(occurrenceDate));
+                    if (rec.recurrence === 'monthly') cursor.setMonth(cursor.getMonth() + 1);
+                    else cursor.setFullYear(cursor.getFullYear() + 1);
+                    iter++;
+                }
+            } else {
+                let cursor = new Date(Math.max(start.getTime(), from.getTime()));
+                let iter = 0;
+                const maxIter = 10000;
+                while (cursor <= to && iter < maxIter) {
+                    if (cursor >= start) occ.push(formatDate(cursor));
+                    switch (rec.recurrence) {
+                        case 'daily': cursor.setDate(cursor.getDate() + 1); break;
+                        case 'weekly': cursor.setDate(cursor.getDate() + 7); break;
+                        default: cursor = new Date(to.getTime() + 1);
+                    }
+                    iter++;
+                }
+            }
+            return occ;
+        }
+
+        // ========== TRANSACTIONS & BALANCE ==========
+        function getAllTransactionsForDate(accountId, dateKey, cache) {
+            const acc = data.accounts[accountId];
+            if (!acc) return [];
+            if (cache && cache.transactionsByDate) return cache.transactionsByDate.get(dateKey) || [];
+            const normal = acc.transactions.filter(t => t.date === dateKey);
+            const recs = acc.recurrences.filter(r => {
+                const start = parseDate(r.startDate);
+                const target = parseDate(dateKey);
+                if (target < start) return false;
+                return getOccurrences(r, target, target).length > 0;
+            });
+            const generated = recs.map(r => ({
+                id: r.id + '-' + dateKey,
+                type: r.type,
+                amount: r.amount,
+                desc: r.desc + ' (recurring)',
+                category: r.category,
+                date: dateKey,
+                isRecurring: true,
+                _recId: r.id
+            }));
+            return [...normal, ...generated];
+        }
+
+        function getBalanceUpToDate(accountId, dateKey, includeDate = true, cache) {
+            const acc = data.accounts[accountId];
+            if (!acc) return 0;
+            if (cache && cache.balancesByDate) {
+                if (includeDate && cache.balancesByDate.has(dateKey)) return cache.balancesByDate.get(dateKey);
+                if (!includeDate) {
+                    const tx = cache.transactionsByDate.get(dateKey) || [];
+                    let balance = cache.balancesByDate.get(dateKey);
+                    if (balance === undefined) balance = acc.startBalance;
+                    tx.forEach(t => balance -= (t.type === 'income' ? t.amount : -t.amount));
+                    return balance;
+                }
+            }
+            let balance = acc.startBalance;
+            const target = parseDate(dateKey);
+            acc.transactions.forEach(t => {
+                const tDate = parseDate(t.date);
+                if (tDate < target || (includeDate && isSameDay(tDate, target)))
+                    balance += (t.type === 'income' ? t.amount : -t.amount);
+            });
+            acc.recurrences.forEach(r => {
+                const start = parseDate(r.startDate);
+                if (start > target) return;
+                const occurrences = getOccurrences(r, start, target);
+                occurrences.forEach(occDateStr => {
+                    const occDate = parseDate(occDateStr);
+                    if (occDate < target || (includeDate && isSameDay(occDate, target)))
+                        balance += (r.type === 'income' ? r.amount : -r.amount);
+                });
+            });
+            return balance;
+        }
+
+        function getBalanceAtEndOfDay(accountId, dateKey, cache) { return getBalanceUpToDate(accountId, dateKey, true, cache); }
+
+        function getBalanceAtEndOfMonth(accountId, year, month) {
+            const lastDay = getDaysInMonth(year, month);
+            const dateKey = dateToKey(year, month, lastDay);
+            return getBalanceAtEndOfDay(accountId, dateKey);
+        }
+
+        function getTotalBalance() {
+            let total = 0;
+            const todayKey = formatDate(new Date());
+            for (const id in data.accounts)
+                total += getBalanceAtEndOfDay(id, todayKey);
+            return total;
+        }
+
+        // ========== CALENDAR CACHE ==========
+        let calendarCache = null;
+
+        function prepareCalendarData(year, month, accountId) {
+            if (calendarCache && calendarCache.year === year && calendarCache.month === month && calendarCache.accountId === accountId)
+                return calendarCache;
+            const acc = data.accounts[accountId];
+            if (!acc) return null;
+            const daysInMonth = getDaysInMonth(year, month);
+            const startKey = dateToKey(year, month, 1);
+            const endKey = dateToKey(year, month, daysInMonth);
+            const startDate = parseDate(startKey);
+            const endDate = parseDate(endKey);
+            const transactionsByDate = new Map();
+            const balancesByDate = new Map();
+            for (let d = 1; d <= daysInMonth; d++)
+                transactionsByDate.set(dateToKey(year, month, d), []);
+            acc.transactions.forEach(tx => {
+                if (tx.date >= startKey && tx.date <= endKey) {
+                    const list = transactionsByDate.get(tx.date);
+                    if (list) list.push(tx);
+                }
+            });
+            acc.recurrences.forEach(rec => {
+                getOccurrences(rec, startDate, endDate).forEach(dateKey => {
+                    const list = transactionsByDate.get(dateKey);
+                    if (list) list.push({ id: rec.id + '-' + dateKey, type: rec.type, amount: rec.amount, desc: rec.desc + ' (recurring)', category: rec.category, date: dateKey, isRecurring: true, _recId: rec.id });
+                });
+            });
+            let runningBalance = getBalanceUpToDate(accountId, startKey, false);
+            for (let d = 1; d <= daysInMonth; d++) {
+                const key = dateToKey(year, month, d);
+                const txList = transactionsByDate.get(key) || [];
+                txList.forEach(tx => { runningBalance += (tx.type === 'income' ? tx.amount : -tx.amount); });
+                balancesByDate.set(key, runningBalance);
+            }
+            calendarCache = { year, month, accountId, transactionsByDate, balancesByDate };
+            return calendarCache;
+        }
+
+        // ========== TOAST ==========
+        let toastTimer = null;
+
+        function showToast(message) {
+            const el = document.getElementById('toast');
+            el.textContent = message;
+            el.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+        }
+
+        // ========== MONTH-END BALANCES ==========
+        function renderMonthEndBalances() {
+            const acc = getActiveAccount();
+            if (!acc) return;
+            const container = document.getElementById('monthEndBalances');
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            // Build a cache for all month-end balances at once for performance
+            const cache = new Map();
+            for (let m = 0; m < 12; m++) {
+                const lastDay = getDaysInMonth(currentYear, m);
+                const key = dateToKey(currentYear, m, lastDay);
+                cache.set(key, getBalanceAtEndOfDay(data.activeAccountId, key));
+            }
+            let html = '';
+            for (let m = 0; m < 12; m++) {
+                const lastDay = getDaysInMonth(currentYear, m);
+                const key = dateToKey(currentYear, m, lastDay);
+                const balance = cache.get(key);
+                const signClass = balance >= 0 ? 'positive' : 'negative';
+                const sign = balance >= 0 ? '+' : '';
+                html += `<div class="month-end-card"><span class="month-end-label">${monthNames[m]}</span><span class="month-end-value ${signClass}">${sign}${acc.currency} ${Math.abs(balance).toFixed(2)}</span></div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        // ========== CALENDAR ==========
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        let selectedDateKey = null;
+
+        function renderCalendar() {
+            const acc = getActiveAccount();
+            if (!acc) return;
+            const cache = prepareCalendarData(currentYear, currentMonth, data.activeAccountId);
+            if (!cache) return;
+            const weekStart = acc.weekStart;
+            const firstDayIndex = getFirstDayOfMonth(currentYear, currentMonth, weekStart);
+            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+            const today = new Date();
+            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const ordered = [...weekdays.slice(weekStart), ...weekdays.slice(0, weekStart)];
+            document.getElementById('weekdaysContainer').innerHTML = ordered.map(d => `<div>${d}</div>`).join('');
+            let html = '';
+            const totalCells = Math.ceil((firstDayIndex + daysInMonth) / 7) * 7;
+            for (let i = 0; i < totalCells; i++) {
+                const day = i - firstDayIndex + 1;
+                if (day < 1 || day > daysInMonth) {
+                    html += '<div class="day-cell empty"></div>';
+                    continue;
+                }
+                const dateKey = dateToKey(currentYear, currentMonth, day);
+                const isToday = isSameDay(new Date(currentYear, currentMonth, day), today);
+                const balance = cache.balancesByDate.get(dateKey) ?? acc.startBalance;
+                const transactions = cache.transactionsByDate.get(dateKey) || [];
+                const hasIncome = transactions.some(t => t.type === 'income');
+                const hasExpense = transactions.some(t => t.type === 'expense');
+                let indicators = '';
+                if (hasIncome) {
+                    const sum = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+                    indicators += `<span class="income-dot">+${sum.toFixed(2)}</span>`;
+                }
+                if (hasExpense) {
+                    const sum = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+                    indicators += `<span class="expense-dot">−${sum.toFixed(2)}</span>`;
+                }
+                const todayMarker = isToday ? '<span class="today-marker"></span>' : '';
+                html += `<div class="day-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${day}${todayMarker}</div><div class="indicators">${indicators}</div><div class="day-balance">${acc.currency} ${balance.toFixed(2)}</div></div>`;
+            }
+            document.getElementById('daysGrid').innerHTML = html;
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('monthYear').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            document.querySelectorAll('.day-cell:not(.empty)').forEach(el => el.addEventListener('click', () => openDayPanel(el.dataset.date)));
+        }
+
+        function openDayPanel(dateKey) {
+            const acc = getActiveAccount();
+            if (!acc) return;
+            selectedDateKey = dateKey;
+            document.getElementById('panelDate').textContent = formatDisplayDate(dateKey);
+            document.getElementById('panelDaySub').textContent = getWeekdayName(dateKey);
+            const cacheDate = parseDate(dateKey);
+            let cache = null;
+            if (cacheDate.getFullYear() === currentYear && cacheDate.getMonth() === currentMonth)
+                cache = prepareCalendarData(currentYear, currentMonth, data.activeAccountId);
+            const balance = getBalanceAtEndOfDay(data.activeAccountId, dateKey, cache);
+            document.getElementById('panelBalance').textContent = `${acc.currency} ${balance.toFixed(2)}`;
+            const transactions = getAllTransactionsForDate(data.activeAccountId, dateKey, cache);
+            const container = document.getElementById('panelTransactions');
+            if (!transactions.length) {
+                container.innerHTML = '<div class="empty-state"><iconify-icon icon="lucide:sparkles" aria-hidden="true"></iconify-icon> No transactions on this day.</div>';
+            } else {
+                container.innerHTML = transactions.map(t => {
+                    const sign = t.type === 'income' ? '+' : '−';
+                    const cls = t.type === 'income' ? 'income' : 'expense';
+                    const emoji = t.type === 'income' ? '<iconify-icon icon="lucide:trending-up" aria-hidden="true"></iconify-icon>' : '<iconify-icon icon="lucide:credit-card" aria-hidden="true"></iconify-icon>';
+                    const isRecurring = t.isRecurring || false;
+                    const realId = t.isRecurring ? t._recId : t.id;
+                    return `<div class="transaction-item" data-id="${realId}" data-recurring="${isRecurring}" data-date="${t.date}" data-type="${t.type}" data-amount="${t.amount}" data-desc="${t.desc.replace(' (recurring)', '')}" data-category="${t.category || ''}"><div class="desc"><span class="emoji-badge">${emoji}</span><span class="name">${t.desc}</span>${t.category ? `<span class="cat">${t.category}</span>` : ''}${isRecurring ? '<span class="cat"><iconify-icon icon="lucide:repeat-2" aria-hidden="true"></iconify-icon></span>' : ''}</div><div class="amount ${cls}">${sign}${acc.currency} ${Math.abs(t.amount).toFixed(2)}</div><div class="tx-actions"><button class="edit-btn" aria-label="Edit"><iconify-icon icon="lucide:pencil" aria-hidden="true"></iconify-icon></button><button class="del-btn" aria-label="Delete"><iconify-icon icon="lucide:trash-2" aria-hidden="true"></iconify-icon></button></div></div>`;
+                }).join('');
+                container.querySelectorAll('.transaction-item').forEach(item => {
+                    const id = item.dataset.id,
+                        isRecurring = item.dataset.recurring === 'true';
+                    item.querySelector('.edit-btn').addEventListener('click', e => {
+                        e.stopPropagation();
+                        openEditModal(id, isRecurring, item.dataset.date, item.dataset.type, parseFloat(item.dataset.amount), item.dataset.desc, item.dataset.category);
+                    });
+                    item.querySelector('.del-btn').addEventListener('click', e => {
+                        e.stopPropagation();
+                        deleteTransaction(id, isRecurring);
+                    });
+                    item.addEventListener('click', () => openEditModal(id, isRecurring, item.dataset.date, item.dataset.type, parseFloat(item.dataset.amount), item.dataset.desc, item.dataset.category));
+                });
+            }
+            document.querySelectorAll('.add-btns button').forEach(btn => btn.onclick = () => {
+                const type = btn.dataset.type;
+                const recurrence = btn.dataset.recurrence || 'none';
+                openModal(type, dateKey, recurrence);
+            });
+            document.getElementById('sidePanel').classList.add('open');
+            document.getElementById('sidePanelBackdrop').classList.add('open');
+        }
+
+        function closePanel() {
+            document.getElementById('sidePanel').classList.remove('open');
+            document.getElementById('sidePanelBackdrop').classList.remove('open');
+        }
+        document.getElementById('closePanel').addEventListener('click', closePanel);
+        document.getElementById('sidePanelBackdrop').addEventListener('click', closePanel);
+
+        function deleteTransaction(id, isRecurring) {
+            const acc = getActiveAccount();
+            if (!acc || !confirm('Delete this transaction?')) return;
+            if (isRecurring) acc.recurrences = acc.recurrences.filter(r => r.id !== id);
+            else acc.transactions = acc.transactions.filter(t => t.id !== id);
+            calendarCache = null;
+            saveData();
+            renderAll();
+            closePanel();
+            showToast('Deleted.');
+        }
+
+        // ========== MODALS ==========
+        function openModal(type = 'income', dateKey = null, recurrence = 'none') {
+            const isRecurring = recurrence !== 'none';
+            document.getElementById('modalType').value = type;
+            document.getElementById('modalTitle').innerHTML = isRecurring ?
+                `<iconify-icon icon="lucide:repeat-2" aria-hidden="true"></iconify-icon> Add Recurring ${type === 'income' ? 'Income' : 'Expense'}` :
+                type === 'income' ? '<iconify-icon icon="lucide:plus" aria-hidden="true"></iconify-icon> Add Income' : '<iconify-icon icon="lucide:minus" aria-hidden="true"></iconify-icon> Add Expense';
+            document.getElementById('modalDate').value = dateKey || formatDate(new Date());
+            document.getElementById('modalValue').value = '';
+            document.getElementById('modalDesc').value = '';
+            document.getElementById('modalCategory').value = '';
+            document.getElementById('modalRecurrence').value = recurrence;
+            document.getElementById('modalOverlay').classList.add('open');
+            // focus on amount field after a short delay
+            setTimeout(() => document.getElementById('modalValue').focus(), 100);
+        }
+
+        function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+        document.getElementById('modalCancel').addEventListener('click', closeModal);
+        document.getElementById('modalSave').addEventListener('click', () => {
+            const acc = getActiveAccount();
+            if (!acc) return;
+            const type = document.getElementById('modalType').value;
+            const amount = parseFloat(document.getElementById('modalValue').value);
+            const desc = document.getElementById('modalDesc').value.trim();
+            const category = document.getElementById('modalCategory').value.trim();
+            const date = document.getElementById('modalDate').value;
+            const recurrence = document.getElementById('modalRecurrence').value;
+            if (!amount || amount <= 0 || !desc || !date) {
+                showToast('Please fill in all required fields.');
+                return;
+            }
+            if (recurrence !== 'none') {
+                acc.recurrences.push({ id: generateId(), type, amount, desc, category, startDate: date, recurrence });
+            } else {
+                acc.transactions.push({ id: generateId(), type, amount, desc, category, date, recurrence: 'none' });
+            }
+            calendarCache = null;
+            saveData();
+            closeModal();
+            renderAll();
+            showToast(recurrence !== 'none' ? 'Recurring rule added.' : 'Transaction added.');
+        });
+
+        let editingId = null,
+            editingIsRecurring = false;
+
+        function openEditModal(id, isRecurring, date, type, amount, desc, category) {
+            editingId = id;
+            editingIsRecurring = isRecurring;
+            document.getElementById('editType').value = type;
+            document.getElementById('editValue').value = amount;
+            document.getElementById('editDesc').value = desc;
+            document.getElementById('editCategory').value = category || '';
+            document.getElementById('editDate').value = date;
+            document.getElementById('editModalTitle').textContent = isRecurring ? 'Edit Recurring Rule' : 'Edit Transaction';
+            document.getElementById('editModalOverlay').classList.add('open');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModalOverlay').classList.remove('open');
+            editingId = null;
+            editingIsRecurring = false;
+        }
+        document.getElementById('editCancel').addEventListener('click', closeEditModal);
+        document.getElementById('editSave').addEventListener('click', () => {
+            const acc = getActiveAccount();
+            if (!acc) return;
+            const type = document.getElementById('editType').value;
+            const amount = parseFloat(document.getElementById('editValue').value);
+            const desc = document.getElementById('editDesc').value.trim();
+            const category = document.getElementById('editCategory').value.trim();
+            const date = document.getElementById('editDate').value;
+            if (!amount || amount <= 0 || !desc || !date) {
+                showToast('Please fill in all required fields.');
+                return;
+            }
+            if (editingIsRecurring) {
+                const rec = acc.recurrences.find(r => r.id === editingId);
+                if (rec) Object.assign(rec, { type, amount, desc, category, startDate: date });
+            } else {
+                const tx = acc.transactions.find(t => t.id === editingId);
+                if (tx) Object.assign(tx, { type, amount, desc, category, date });
+            }
+            calendarCache = null;
+            saveData();
+            closeEditModal();
+            renderAll();
+            showToast('Updated.');
+        });
+        document.getElementById('editDelete').addEventListener('click', () => {
+            if (confirm('Delete permanently?')) {
+                deleteTransaction(editingId, editingIsRecurring);
+                closeEditModal();
+            }
+        });
+
+        // ========== OVERVIEW ==========
+        let currentPeriod = 'monthly';
+
+        function renderOverview() {
+            const acc = getActiveAccount();
+            if (!acc) return;
+            const period = document.getElementById('periodSelect').value;
+            currentPeriod = period;
+            const today = new Date();
+            const range = getPeriodRange(period, today, acc.weekStart);
+            const todayKey = formatDate(today);
+            document.getElementById('ovTotalBalance').textContent = `${acc.currency} ${getTotalBalance().toFixed(2)}`;
+            document.getElementById('ovBalance').textContent = `${acc.currency} ${getBalanceAtEndOfDay(data.activeAccountId, todayKey).toFixed(2)}`;
+            let income = 0,
+                expense = 0;
+            const startDate = parseDate(range.start);
+            const endDate = parseDate(range.end);
+            acc.transactions.forEach(t => {
+                const tDate = parseDate(t.date);
+                if (tDate >= startDate && tDate <= endDate) {
+                    if (t.type === 'income') income += t.amount;
+                    else expense += t.amount;
+                }
+            });
+            acc.recurrences.forEach(r => {
+                const start = parseDate(r.startDate);
+                if (start > endDate) return;
+                getOccurrences(r, startDate, endDate).forEach(dateKey => {
+                    const occDate = parseDate(dateKey);
+                    if (occDate >= startDate && occDate <= endDate) {
+                        if (r.type === 'income') income += r.amount;
+                        else expense += r.amount;
+                    }
+                });
+            });
+            document.getElementById('ovIncome').textContent = `${acc.currency} ${income.toFixed(2)}`;
+            document.getElementById('ovExpense').textContent = `${acc.currency} ${expense.toFixed(2)}`;
+            document.getElementById('ovProjected').textContent = `${acc.currency} ${getBalanceAtEndOfDay(data.activeAccountId, range.end).toFixed(2)}`;
+            document.getElementById('chartTitle').innerHTML = `<iconify-icon icon="lucide:chart-no-axes-combined" aria-hidden="true"></iconify-icon> Evolution (${period})`;
+            drawChart(period);
+            renderMonthEndBalances();
+        }
+
+        function getPeriodRange(period, baseDate, weekStart) {
+            const year = baseDate.getFullYear(),
+                month = baseDate.getMonth(),
+                date = baseDate.getDate();
+            if (period === 'weekly') {
+                const diff = (baseDate.getDay() - weekStart + 7) % 7;
+                const monday = new Date(baseDate);
+                monday.setDate(date - diff);
+                const sunday = new Date(monday);
+                sunday.setDate(monday.getDate() + 6);
+                return { start: formatDate(monday), end: formatDate(sunday) };
+            }
+            if (period === 'monthly')
+                return { start: dateToKey(year, month, 1), end: dateToKey(year, month, getDaysInMonth(year, month)) };
+            return { start: dateToKey(year, 0, 1), end: dateToKey(year, 11, 31) };
+        }
+
+        function drawChart(period) {
+            const acc = getActiveAccount();
+            if (!acc) return;
+            const canvas = document.getElementById('balanceChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const container = canvas.parentElement;
+            const style = window.getComputedStyle(container);
+            const width = container.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+            const height = 160;
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            ctx.scale(dpr, dpr);
+            const today = new Date();
+            const range = getPeriodRange(period, today, acc.weekStart);
+            const startDate = parseDate(range.start);
+            const endDate = parseDate(range.end);
+            const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            const maxPoints = period === 'weekly' ? 7 : period === 'monthly' ? Math.min(daysDiff, 31) : Math.min(daysDiff, 365);
+            const step = Math.max(1, Math.ceil(daysDiff / maxPoints));
+            let points = [];
+            // Use a cache for balances to speed up chart drawing
+            const balanceCache = new Map();
+            const getBal = (dateKey) => {
+                if (!balanceCache.has(dateKey)) balanceCache.set(dateKey, getBalanceAtEndOfDay(data.activeAccountId, dateKey));
+                return balanceCache.get(dateKey);
+            };
+            for (let i = 0; i < daysDiff; i += step) {
+                const d = new Date(startDate);
+                d.setDate(d.getDate() + i);
+                if (d > endDate) break;
+                points.push({ date: d, balance: getBal(formatDate(d)) });
+            }
+            if (!points.length || points[points.length - 1].date < endDate)
+                points.push({ date: endDate, balance: getBal(formatDate(endDate)) });
+            const pad = { top: 12, bottom: 16, left: 0, right: 0 };
+            const chartW = width - pad.left - pad.right;
+            const chartH = height - pad.top - pad.bottom;
+            const maxBal = Math.max(...points.map(p => p.balance), 0);
+            const minBal = Math.min(...points.map(p => p.balance), 0);
+            const rangeBal = Math.max(maxBal - minBal, 1);
+            ctx.clearRect(0, 0, width, height);
+            const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
+            grad.addColorStop(0, 'rgba(139,92,246,0.20)');
+            grad.addColorStop(1, 'rgba(139,92,246,0.02)');
+            ctx.beginPath();
+            points.forEach((p, i) => {
+                const x = pad.left + (i / (points.length - 1)) * chartW;
+                const y = pad.top + chartH - ((p.balance - minBal) / rangeBal) * chartH;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.lineTo(pad.left + chartW, pad.top + chartH);
+            ctx.lineTo(pad.left, pad.top + chartH);
+            ctx.closePath();
+            ctx.fillStyle = grad;
+            ctx.fill();
+            ctx.beginPath();
+            points.forEach((p, i) => {
+                const x = pad.left + (i / (points.length - 1)) * chartW;
+                const y = pad.top + chartH - ((p.balance - minBal) / rangeBal) * chartH;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = '#8b5cf6';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+            ctx.fillStyle = '#888888';
+            ctx.font = '9px Inter';
+            ctx.textAlign = 'center';
+            points.forEach((p, i) => {
+                if (i % Math.max(1, Math.floor(points.length / 7)) === 0 || i === points.length - 1) {
+                    const x = pad.left + (i / (points.length - 1)) * chartW;
+                    ctx.fillText(`${p.date.getDate()}/${p.date.getMonth()+1}`, x, pad.top + chartH + 12);
+                }
+            });
+        }
+
+        // ========== RECURRING ==========
+        function renderRecurring() {
+            const acc = getActiveAccount();
+            if (!acc) return;
+            const list = document.getElementById('recurringList');
+            if (!acc.recurrences.length) {
+                list.innerHTML = '<div class="empty-state"><iconify-icon icon="lucide:repeat-2" aria-hidden="true"></iconify-icon> No recurring rules yet.</div>';
+                return;
+            }
+            const freqMap = { daily: 'Daily', weekly: 'Weekly', monthly: 'Monthly', yearly: 'Yearly' };
+            list.innerHTML = acc.recurrences.map(r =>
+                `<div class="recurring-item"><div class="info"><div class="title">${r.type==='income'?'<iconify-icon icon="lucide:trending-up" aria-hidden="true"></iconify-icon>':'<iconify-icon icon="lucide:credit-card" aria-hidden="true"></iconify-icon>'} ${r.desc}</div><div class="meta">${freqMap[r.recurrence]||r.recurrence} · ${r.category||'No category'} · starts ${formatDisplayDate(r.startDate)}</div></div><div class="amount ${r.type}">${r.type==='income'?'+':'−'}${acc.currency} ${r.amount.toFixed(2)}</div><div class="actions"><button class="edit-btn" data-id="${r.id}" aria-label="Edit"><iconify-icon icon="lucide:pencil" aria-hidden="true"></iconify-icon></button><button class="del-btn" data-id="${r.id}" aria-label="Delete"><iconify-icon icon="lucide:trash-2" aria-hidden="true"></iconify-icon></button></div></div>`
+            ).join('');
+            list.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', () => {
+                const rec = acc.recurrences.find(r => r.id === btn.dataset.id);
+                if (rec) openEditModal(rec.id, true, rec.startDate, rec.type, rec.amount, rec.desc, rec.category);
+            }));
+            list.querySelectorAll('.del-btn').forEach(btn => btn.addEventListener('click', () => {
+                if (confirm('Delete rule?')) {
+                    acc.recurrences = acc.recurrences.filter(r => r.id !== btn.dataset.id);
+                    calendarCache = null;
+                    saveData();
+                    renderRecurring();
+                    renderCalendar();
+                    renderOverview();
+                    showToast('Rule deleted.');
+                }
+            }));
+        }
+
+        // ========== ACCOUNTS ==========
+        function renderAccountList() {
+            const container = document.getElementById('accountList');
+            if (!data.accounts) return;
+            const accountIds = Object.keys(data.accounts);
+            container.innerHTML = accountIds.map(id => {
+                const acc = data.accounts[id];
+                const isActive = id === data.activeAccountId;
+                return `<div class="account-item"><div><span class="name">${acc.name}</span>${isActive?'<span class="badge">Active</span>':''}</div><div class="actions">${!isActive?`<button class="switch-btn" data-id="${id}">Activate</button>`:''}<button class="rename-btn" data-id="${id}">Rename</button>${accountIds.length>1?`<button class="delete-btn" data-id="${id}">Delete</button>`:''}</div></div>`;
+            }).join('');
+            container.querySelectorAll('.switch-btn').forEach(btn => btn.addEventListener('click', () => {
+                data.activeAccountId = btn.dataset.id;
+                calendarCache = null;
+                saveData();
+                updateAccountSelector();
+                renderAll();
+                showToast('Account switched.');
+            }));
+            container.querySelectorAll('.rename-btn').forEach(btn => btn.addEventListener('click', () => {
+                const acc = data.accounts[btn.dataset.id];
+                if (!acc) return;
+                const name = prompt('New name:', acc.name);
+                if (name && name.trim()) {
+                    acc.name = name.trim();
+                    saveData();
+                    renderAccountList();
+                    updateAccountSelector();
+                }
+            }));
+            container.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', () => {
+                if (Object.keys(data.accounts).length <= 1) {
+                    showToast('Cannot delete the only account.');
+                    return;
+                }
+                if (confirm(`Delete ${data.accounts[btn.dataset.id].name}?`)) {
+                    delete data.accounts[btn.dataset.id];
+                    if (data.activeAccountId === btn.dataset.id)
+                        data.activeAccountId = Object.keys(data.accounts)[0];
+                    calendarCache = null;
+                    saveData();
+                    updateAccountSelector();
+                    renderAll();
+                    showToast('Account deleted.');
+                }
+            }));
+        }
+
+        function updateAccountSelector() {
+            const select = document.getElementById('accountSelect');
+            if (!data.accounts) return;
+            select.innerHTML = Object.keys(data.accounts).map(id =>
+                `<option value="${id}" ${id===data.activeAccountId?'selected':''}>${data.accounts[id].name}</option>`
+            ).join('');
+        }
+        document.getElementById('accountSelect').addEventListener('change', function() {
+            data.activeAccountId = this.value;
+            calendarCache = null;
+            saveData();
+            closePanel();
+            renderAll();
+        });
+        document.getElementById('quickAddAccount').addEventListener('click', () => {
+            const name = prompt('New account name:');
+            if (name && name.trim()) {
+                const acc = defaultAccount(name.trim());
+                data.accounts[acc.id] = acc;
+                data.activeAccountId = acc.id;
+                calendarCache = null;
+                saveData();
+                updateAccountSelector();
+                renderAll();
+                showToast('Account created.');
+            }
+        });
+        document.getElementById('createAccountBtn').addEventListener('click', () => {
+            const input = document.getElementById('newAccountName');
+            const name = input.value.trim();
+            if (!name) {
+                showToast('Enter a name.');
+                return;
+            }
+            const acc = defaultAccount(name);
+            data.accounts[acc.id] = acc;
+            data.activeAccountId = acc.id;
+            input.value = '';
+            calendarCache = null;
+            saveData();
+            updateAccountSelector();
+            renderAll();
+            showToast('Account created.');
+        });
+
+        function loadSettingsUI() {
+            const acc = getActiveAccount();
+            if (!acc) return;
+            document.getElementById('setCurrency').value = acc.currency || '€';
+            document.getElementById('setStartBalance').value = acc.startBalance || 0;
+            document.getElementById('setWeekStart').value = acc.weekStart !== undefined ? acc.weekStart : 1;
+        }
+
+        function saveSettings() {
+            const acc = getActiveAccount();
+            if (!acc) return;
+            acc.currency = document.getElementById('setCurrency').value;
+            acc.startBalance = parseFloat(document.getElementById('setStartBalance').value) || 0;
+            acc.weekStart = parseInt(document.getElementById('setWeekStart').value);
+            calendarCache = null;
+            saveData();
+            renderAll();
+            showToast('Settings saved.');
+        }
+        document.getElementById('setCurrency').addEventListener('change', saveSettings);
+        document.getElementById('setStartBalance').addEventListener('change', saveSettings);
+        document.getElementById('setWeekStart').addEventListener('change', saveSettings);
+        document.getElementById('resetDataBtn').addEventListener('click', () => {
+            if (confirm('Delete ALL data? This cannot be undone.')) {
+                data = defaultData();
+                calendarCache = null;
+                saveData();
+                updateAccountSelector();
+                renderAll();
+                showToast('Data reset.');
+            }
+        });
+        document.getElementById('exportDataBtn').addEventListener('click', () => {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'finance-data.json';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            showToast('Data exported.');
+        });
+
+        // ========== CALCULATOR ==========
+        let calculator = { currentValue: '0', previousValue: null, operation: null, waitingForOperand: false, memory: 0 };
+        let calculatorInitialized = false;
+        let salaryTabCounter = 2;
+        let tabNames = { salary1: 'Salary Calc', salary2: 'Salary Calc 2' };
+
+        function updateCalculatorDisplay() {
+            const display = document.getElementById('calculatorDisplay');
+            const memoryDisplay = document.getElementById('memoryDisplay');
+            let formattedValue = calculator.currentValue;
+            try {
+                if (formattedValue.includes('.')) {
+                    const [integerPart, decimalPart] = formattedValue.split('.');
+                    formattedValue = parseFloat(integerPart).toLocaleString('en-US') + '.' + decimalPart;
+                } else {
+                    formattedValue = parseFloat(formattedValue).toLocaleString('en-US');
+                }
+            } catch (_) {
+                formattedValue = calculator.currentValue;
+            }
+            display.textContent = formattedValue;
+            if (calculator.memory !== 0) {
+                const memoryFormatted = Math.abs(calculator.memory).toLocaleString('en-US');
+                memoryDisplay.textContent = (calculator.memory < 0 ? '−' : '') + memoryFormatted;
+                memoryDisplay.parentElement.style.opacity = '1';
+            } else {
+                memoryDisplay.textContent = '';
+                memoryDisplay.parentElement.style.opacity = '0.5';
+            }
+        }
+
+        function handleNumberInput(value) {
+            if (calculator.waitingForOperand) {
+                calculator.currentValue = value;
+                calculator.waitingForOperand = false;
+            } else {
+                if (calculator.currentValue === '0' && value !== '.') calculator.currentValue = value;
+                else calculator.currentValue += value;
+            }
+            if (calculator.currentValue.split('').filter(c => c === '.').length > 1)
+                calculator.currentValue = calculator.currentValue.slice(0, -1);
+            updateCalculatorDisplay();
+        }
+
+        function handleOperation(op) {
+            if (calculator.operation && !calculator.waitingForOperand) performCalculation();
+            calculator.previousValue = calculator.currentValue;
+            calculator.operation = op;
+            calculator.waitingForOperand = true;
+            updateCalculatorDisplay();
+        }
+
+        function performCalculation() {
+            const prev = parseFloat(calculator.previousValue);
+            const current = parseFloat(calculator.currentValue);
+            if (isNaN(prev) || isNaN(current) || calculator.operation === null) return;
+            let result;
+            switch (calculator.operation) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = prev / current;
+                    break;
+                default:
+                    return;
+            }
+            calculator.currentValue = result.toString();
+            calculator.operation = null;
+            calculator.waitingForOperand = true;
+            calculator.previousValue = result.toString();
+            updateCalculatorDisplay();
+        }
+
+        function clearAllCalculator() {
+            calculator.currentValue = '0';
+            calculator.previousValue = null;
+            calculator.operation = null;
+            calculator.waitingForOperand = false;
+            calculator.memory = 0;
+            updateCalculatorDisplay();
+        }
+
+        function handleMemoryOperation(op) {
+            const current = parseFloat(calculator.currentValue);
+            switch (op) {
+                case 'MC':
+                    calculator.memory = 0;
+                    break;
+                case 'MR':
+                    calculator.currentValue = calculator.memory.toString();
+                    calculator.waitingForOperand = false;
+                    break;
+                case 'M+':
+                    calculator.memory += current;
+                    break;
+                case 'M-':
+                    calculator.memory -= current;
+                    break;
+            }
+            updateCalculatorDisplay();
+        }
+
+        function calculateSalary(number) {
+            const acc = getActiveAccount();
+            if (!acc) return;
+            const hourlyRate = parseFloat(document.getElementById(`hourlyRate${number}`).value) || 0;
+            const hoursPerDay = parseFloat(document.getElementById(`hoursPerDay${number}`).value) || 0;
+            const daysWorked = parseFloat(document.getElementById(`daysWorked${number}`).value) || 0;
+            const monthlySalary = hourlyRate * hoursPerDay * daysWorked;
+            document.getElementById(`salaryAmount${number}`).textContent = `${acc.currency} ${monthlySalary.toFixed(2)}`;
+            document.getElementById(`salaryResult${number}`).style.display = 'block';
+            showToast('Salary calculated!');
+        }
+
+        function renameTab(tabId) {
+            const currentName = tabNames[tabId] || `Salary Calc ${tabId.replace('salary','')}`;
+            const newName = prompt('Rename calculator:', currentName);
+            if (newName && newName.trim()) {
+                tabNames[tabId] = newName.trim();
+                const tabBtn = document.querySelector(`.calc-tab[data-tab="${tabId}"] .tab-name`);
+                if (tabBtn) tabBtn.textContent = newName;
+                const titleEl = document.querySelector(`#${tabId}Calc .salary-title`);
+                if (titleEl) {
+                    const num = newName.match(/\d+$/);
+                    const baseName = newName.replace(/\s*\d+$/, '');
+                    titleEl.textContent = baseName + ' Calculator' + (num ? ' ' + num[0] : '');
+                }
+                showToast('Renamed!');
+            }
+        }
+
+        function deleteSalaryTab(tabId) {
+            const tabBtn = document.querySelector(`.calc-tab[data-tab="${tabId}"]`);
+            const contentDiv = document.getElementById(`${tabId}Calc`);
+            const wasActive = tabBtn && tabBtn.classList.contains('active');
+            if (tabBtn) tabBtn.remove();
+            if (contentDiv) contentDiv.remove();
+            delete tabNames[tabId];
+            showToast('Calculator deleted');
+            if (wasActive) {
+                const firstTab = document.querySelector('.calc-tab');
+                if (firstTab) {
+                    firstTab.classList.add('active');
+                    const contentId = firstTab.dataset.tab + 'Calc';
+                    const contentEl = document.getElementById(contentId);
+                    if (contentEl) contentEl.classList.add('active');
+                    if (firstTab.dataset.tab === 'standard') updateCalculatorDisplay();
+                }
+            }
+        }
+
+        function createSalaryTabElement(tabId, number) {
+            const displayName = tabNames[tabId] || `Salary Calc${number>1?' '+number:''}`;
+            const tabBtn = document.createElement('button');
+            tabBtn.className = 'calc-tab';
+            tabBtn.dataset.tab = tabId;
+            tabBtn.innerHTML = `<iconify-icon icon="lucide:dollar-sign"></iconify-icon> <span class="tab-name">${displayName}</span>`;
+            const contentDiv = document.createElement('div');
+            contentDiv.id = `${tabId}Calc`;
+            contentDiv.className = 'calc-content';
+            const titleText = displayName.replace(/\s*\d+$/, '') + ' Calculator' + (displayName.match(/\d+$/) || [''])[0];
+            contentDiv.innerHTML = `
+                    <div class="salary-header">
+                        <span class="salary-title">${titleText}</span>
+                        <div class="tab-actions">
+                            <button class="rename-tab-btn" data-tab="${tabId}" title="Rename this calculator"><iconify-icon icon="lucide:pencil"></iconify-icon></button>
+                            <button class="delete-salary-btn" data-tab="${tabId}" title="Delete this calculator"><iconify-icon icon="lucide:trash-2"></iconify-icon></button>
+                        </div>
+                    </div>
+                    <div class="salary-form">
+                        <div class="form-row"><label for="hourlyRate${number}">Hourly Rate</label><input type="number" id="hourlyRate${number}" placeholder="0.00" step="0.01" /></div>
+                        <div class="form-row"><label for="hoursPerDay${number}">Hours Per Day</label><input type="number" id="hoursPerDay${number}" placeholder="8" step="0.1" /></div>
+                        <div class="form-row"><label for="daysWorked${number}">Days Worked</label><input type="number" id="daysWorked${number}" placeholder="20" step="1" /></div>
+                        <button class="calc-btn equals-btn" id="calculateSalary${number}" style="margin-top:10px; width:100%;"><iconify-icon icon="lucide:calculator"></iconify-icon> Calculate</button>
+                    </div>
+                    <div class="result-display" id="salaryResult${number}" style="display:none;">
+                        <div class="result-value" id="salaryAmount${number}">$0.00</div>
+                        <div class="result-label">Monthly Salary</div>
+                    </div>`;
+            return { tabBtn, contentDiv };
+        }
+
+        function addNewSalaryTab() {
+            salaryTabCounter++;
+            const tabId = `salary${salaryTabCounter}`;
+            const tabsContainer = document.getElementById('calcTabs');
+            const calcContainer = document.querySelector('#viewCalculator .calculator-wrapper');
+            const { tabBtn, contentDiv } = createSalaryTabElement(tabId, salaryTabCounter);
+            tabsContainer.insertBefore(tabBtn, document.getElementById('addCalcTab'));
+            calcContainer.appendChild(contentDiv);
+            document.getElementById(`calculateSalary${salaryTabCounter}`).addEventListener('click', () => calculateSalary(salaryTabCounter));
+            contentDiv.querySelector('.rename-tab-btn').addEventListener('click', () => renameTab(tabId));
+            contentDiv.querySelector('.delete-salary-btn').addEventListener('click', () => deleteSalaryTab(tabId));
+            tabBtn.addEventListener('click', () => switchCalcTab(tabId));
+            // Activate the new tab
+            document.querySelectorAll('.calc-tab').forEach(t => t.classList.remove('active'));
+            tabBtn.classList.add('active');
+            document.querySelectorAll('.calc-content').forEach(c => c.classList.remove('active'));
+            contentDiv.classList.add('active');
+            showToast('New calculator added!');
+        }
+
+        function switchCalcTab(tabId) {
+            document.querySelectorAll('.calc-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.calc-content').forEach(c => c.classList.remove('active'));
+            const tabBtn = document.querySelector(`.calc-tab[data-tab="${tabId}"]`);
+            const contentEl = document.getElementById(`${tabId}Calc`);
+            if (tabBtn) tabBtn.classList.add('active');
+            if (contentEl) contentEl.classList.add('active');
+            if (tabId === 'standard') updateCalculatorDisplay();
+        }
+
+        function initializeCalcTabs() {
+            // Use event delegation to avoid double-binding
+            const tabsContainer = document.getElementById('calcTabs');
+            // Remove old listener and add fresh one
+            const newTabsContainer = tabsContainer.cloneNode(true);
+            tabsContainer.parentNode.replaceChild(newTabsContainer, tabsContainer);
+            newTabsContainer.querySelectorAll('.calc-tab').forEach(tab => {
+                tab.addEventListener('click', () => switchCalcTab(tab.dataset.tab));
+            });
+            // Bind rename and delete buttons via delegation
+            newTabsContainer.addEventListener('click', (e) => {
+                const renameBtn = e.target.closest('.rename-tab-btn');
+                const deleteBtn = e.target.closest('.delete-salary-btn');
+                if (renameBtn) renameTab(renameBtn.dataset.tab);
+                if (deleteBtn) deleteSalaryTab(deleteBtn.dataset.tab);
+            });
+            // Bind addCalcTab
+            const addBtn = newTabsContainer.querySelector('#addCalcTab');
+            if (addBtn) addBtn.addEventListener('click', addNewSalaryTab);
+            // Bind salary buttons via delegation on the calculator wrapper
+            const calcWrapper = document.querySelector('#viewCalculator .calculator-wrapper');
+            const newCalcWrapper = calcWrapper.cloneNode(true);
+            calcWrapper.parentNode.replaceChild(newCalcWrapper, calcWrapper);
+            newCalcWrapper.querySelectorAll('[id^="calculateSalary"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const num = btn.id.replace('calculateSalary', '');
+                    calculateSalary(num);
+                });
+            });
+            newCalcWrapper.querySelectorAll('.rename-tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => renameTab(btn.dataset.tab));
+            });
+            newCalcWrapper.querySelectorAll('.delete-salary-btn').forEach(btn => {
+                btn.addEventListener('click', () => deleteSalaryTab(btn.dataset.tab));
+            });
+            // Re-bind tab clicks after clone
+            newCalcWrapper.querySelectorAll('.calc-tab').forEach(tab => {
+                tab.addEventListener('click', () => switchCalcTab(tab.dataset.tab));
+            });
+        }
+
+        function initializeCalculator() {
+            if (calculatorInitialized) {
+                updateCalculatorDisplay();
+                return;
+            }
+            const acc = getActiveAccount();
+            if (!acc) return;
+            // Standard calculator buttons
+            document.querySelectorAll('#standardCalc .num-btn').forEach(btn => btn.addEventListener('click', () => handleNumberInput(btn.dataset.value)));
+            document.querySelectorAll('#standardCalc .op-btn[data-op]').forEach(btn => btn.addEventListener('click', () => handleOperation(btn.dataset.op)));
+            document.querySelector('#standardCalc .equals-btn').addEventListener('click', () => performCalculation());
+            document.getElementById('clearAll').addEventListener('click', clearAllCalculator);
+            document.getElementById('memoryClear').addEventListener('click', () => handleMemoryOperation('MC'));
+            document.getElementById('memoryRecall').addEventListener('click', () => handleMemoryOperation('MR'));
+            document.getElementById('memoryAdd').addEventListener('click', () => handleMemoryOperation('M+'));
+            document.getElementById('memorySubtract').addEventListener('click', () => handleMemoryOperation('M-'));
+            // Salary calculator buttons
+            document.querySelectorAll('[id^="calculateSalary"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const num = btn.id.replace('calculateSalary', '');
+                    calculateSalary(num);
+                });
+            });
+            // Tab switching
+            document.querySelectorAll('.calc-tab').forEach(tab => {
+                tab.addEventListener('click', () => switchCalcTab(tab.dataset.tab));
+            });
+            // Rename / delete
+            document.querySelectorAll('.rename-tab-btn').forEach(btn => btn.addEventListener('click', () => renameTab(btn.dataset.tab)));
+            document.querySelectorAll('.delete-salary-btn').forEach(btn => btn.addEventListener('click', () => deleteSalaryTab(btn.dataset.tab)));
+            // Add tab
+            document.getElementById('addCalcTab').addEventListener('click', addNewSalaryTab);
+            updateCalculatorDisplay();
+            calculatorInitialized = true;
+        }
+
+        // ========== NAVIGATION ==========
+        function navigateTo(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+            const map = { viewCalendar: 'calendar', viewRecurring: 'recurring', viewCalculator: 'calculator', viewSettings: 'settings' };
+            const navBtn = document.querySelector(`.bottom-nav-item[data-view="${map[viewId]}"]`);
+            if (navBtn) navBtn.classList.add('active');
+            if (viewId === 'viewCalendar') { renderCalendar();
+                renderOverview(); } else if (viewId === 'viewRecurring') renderRecurring();
+            else if (viewId === 'viewCalculator') initializeCalculator();
+            else if (viewId === 'viewSettings') { loadSettingsUI();
+                renderAccountList(); }
+        }
+        document.querySelectorAll('.bottom-nav-item').forEach(btn => btn.addEventListener('click', () => {
+            const map = { calendar: 'viewCalendar', recurring: 'viewRecurring', calculator: 'viewCalculator', settings: 'viewSettings' };
+            navigateTo(map[btn.dataset.view]);
+        }));
+        document.getElementById('fabAdd').addEventListener('click', () => openModal('income'));
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) { currentMonth = 11;
+                currentYear--; }
+            calendarCache = null;
+            renderCalendar();
+        });
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) { currentMonth = 0;
+                currentYear++; }
+            calendarCache = null;
+            renderCalendar();
+        });
+        document.getElementById('todayBtn').addEventListener('click', () => {
+            const t = new Date();
+            currentYear = t.getFullYear();
+            currentMonth = t.getMonth();
+            calendarCache = null;
+            renderCalendar();
+        });
+        document.getElementById('periodSelect').addEventListener('change', renderOverview);
+        document.getElementById('addRecurringBtn').addEventListener('click', () => {
+            openModal('income', null, 'monthly');
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            closeModal();
+            closeEditModal();
+            closePanel();
+        });
+        document.querySelectorAll('.modal-overlay').forEach(overlay => overlay.addEventListener('click', e => {
+            if (e.target === overlay) overlay.classList.remove('open');
+        }));
+
+        function renderAll() {
+            const activeView = document.querySelector('.view.active');
+            if (!activeView) return;
+            if (activeView.id === 'viewCalendar') { renderCalendar();
+                renderOverview(); } else if (activeView.id === 'viewRecurring') renderRecurring();
+            else if (activeView.id === 'viewSettings') { loadSettingsUI();
+                renderAccountList(); }
+            updateAccountSelector();
+        }
+
+        // ========== INIT ==========
+        if (!data.accounts || Object.keys(data.accounts).length === 0) {
+            const def = defaultData();
+            data.accounts = def.accounts;
+            data.activeAccountId = def.activeAccountId;
+        }
+        if (!data.accounts[data.activeAccountId]) data.activeAccountId = Object.keys(data.accounts)[0];
+        Object.keys(data.accounts).forEach(id => {
+            const acc = data.accounts[id];
+            if (!acc.currency) acc.currency = '€';
+            if (acc.startBalance === undefined) acc.startBalance = 0;
+            if (acc.weekStart === undefined) acc.weekStart = 1;
+            if (!acc.transactions) acc.transactions = [];
+            if (!acc.recurrences) acc.recurrences = [];
+        });
+        saveData();
+        updateAccountSelector();
+        loadSettingsUI();
+        renderAll();
+        document.getElementById('modalDate').value = formatDate(new Date());
+        window.addEventListener('resize', () => {
+            if (document.getElementById('viewCalendar').classList.contains('active')) renderOverview();
+        });
+    </script>
+</body>
+</html>
