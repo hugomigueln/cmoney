@@ -832,34 +832,7 @@
         }
         .btn-danger { background: rgba(255, 107, 122, .1); color: var(--expense); }
         .btn-danger:hover { background: rgba(255, 107, 122, .2); }
-                .bottom-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: var(--surface-2);
-        border-top: 1px solid var(--line);
-        display: flex;
-        justify-content: space-around;
-        padding: 12px 0;
-        z-index: 100;
-        padding-bottom: env(safe-area-inset-bottom, 12px);
-    }
-            .bottom-nav-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        padding: 8px 16px;
-        background: transparent;
-        border: none;
-        border-radius: 50px;
-        color: var(--muted);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        min-width: 64px;
-    }
-    .bottom-nav-item.active {
+                .bottom-nav-item.active {
         background: rgba(155, 124, 255, 0.15);
         color: var(--text);
     }
@@ -935,8 +908,6 @@
             .add-account-form { flex-direction: column; }
             .recurring-item { align-items: flex-start; flex-wrap: wrap; }
             .recurring-item .actions { margin-left: auto; }
-            .bottom-nav { bottom: 12px; max-width: calc(100vw - 20px); width: max-content; padding: 8px; }
-            .bottom-nav-item { padding: 12px 16px; font-size: .8rem; }
             .calculator-display { padding: 14px; }
             .main-display { font-size: 1.8rem; }
             .calc-btn { padding: 12px 0; font-size: 1rem; }
@@ -956,7 +927,6 @@
             .day-number { font-size: .65rem; }
             .income-dot, .expense-dot { font-size: .45rem; padding: 1px 3px; }
             .day-balance { font-size: .48rem; }
-            .bottom-nav-item { padding: 10px 12px; font-size: .75rem; }
             .main-display { font-size: 1.5rem; }
             .calc-btn { padding: 10px 0; font-size: .9rem; }
             .calc-tab { padding: 4px 10px; font-size: .75rem; }
@@ -969,8 +939,7 @@
         }
         iconify-icon { display: inline-flex; width: 1.1em; height: 1.1em; vertical-align: -.18em; flex: 0 0 auto; }
         .emoji-badge { width: 28px; height: 28px; margin-right: 7px; display: inline-flex; align-items: center; justify-content: center; border-radius: 9px; background: rgba(155, 124, 255, .10); color: var(--primary); vertical-align: middle; flex-shrink: 0; }
-        .tx-actions button, .actions button, .nav-buttons button, .account-selector button, .fab-add, .bottom-nav-item { display: inline-flex; align-items: center; justify-content: center; }
-        .tx-actions iconify-icon, .actions iconify-icon { width: 15px; height: 15px; }
+        .tx-actions button, .actions button, .nav-buttons button, .account-selector button, .fab-add, .tx-actions iconify-icon, .actions iconify-icon { width: 15px; height: 15px; }
         .fab-add iconify-icon { width: 20px; height: 20px; }
 
 
@@ -1190,3 +1159,51 @@
     .day-cell.selected .day-number {
         color: var(--primary);
     }
+
+    .bottom-nav {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 50px;
+        display: flex;
+        justify-content: center;
+        padding: 8px;
+        z-index: 100;
+        gap: 8px;
+        margin: 0 auto;
+        max-width: 90vw;
+        padding-bottom: env(safe-area-inset-bottom, 8px);
+    }
+    .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 12px;
+        background: transparent;
+        border: none;
+        border-radius: 30px;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .bottom-nav-item.active {
+        background: rgba(155, 124, 255, 0.15);
+        color: var(--text);
+    }
+    .bottom-nav-item:hover:not(.active) {
+        color: var(--text);
+    }
+    .bottom-nav-item iconify-icon {
+        width: 20px;
+        height: 20px;
+    }
+    .bottom-nav-item span {
+        font-size: 11px;
+        font-weight: 500;
+    }
+    
+    /* Remove body bottom padding since nav is floating */
