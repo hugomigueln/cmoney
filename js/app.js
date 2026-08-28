@@ -594,7 +594,27 @@ document.addEventListener('DOMContentLoaded', function() {
             const period = document.getElementById('periodSelect').value;
             currentPeriod = period;
             const today = new Date();
-            const range = getPeriodRange(period, today, acc.weekStart);
+            
+            // Use calendar dates for the range
+            let rangeStart, rangeEnd;
+            if (calendarViewMode === 'monthly') {
+                rangeStart = dateToKey(currentYear, currentMonth, 1);
+                rangeEnd = dateToKey(currentYear, currentMonth, getDaysInMonth(currentYear, currentMonth));
+            } else {
+                // Weekly view: use the current week
+                let startOfWeek;
+                if (currentWeekStartDate) {
+                    startOfWeek = new Date(currentWeekStartDate);
+                } else {
+                    startOfWeek = getStartOfWeek(today, acc.weekStart);
+                }
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                rangeStart = formatDate(startOfWeek);
+                rangeEnd = formatDate(endOfWeek);
+            }
+            
+            const range = { start: rangeStart, end: rangeEnd };
             const todayKey = formatDate(today);
             document.getElementById('ovTotalBalance').textContent = `${acc.currency} ${getTotalBalance().toFixed(2)}`;
             document.getElementById('ovBalance').textContent = `${acc.currency} ${getBalanceAtEndOfDay(data.activeAccountId, todayKey).toFixed(2)}`;
@@ -622,7 +642,17 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('ovIncome').textContent = `${acc.currency} ${income.toFixed(2)}`;
             document.getElementById('ovExpense').textContent = `${acc.currency} ${expense.toFixed(2)}`;
             document.getElementById('ovProjected').textContent = `${acc.currency} ${getBalanceAtEndOfDay(data.activeAccountId, range.end).toFixed(2)}`;
-            document.getElementById('chartTitle').innerHTML = `<iconify-icon icon="lucide:chart-no-axes-combined" aria-hidden="true"></iconify-icon> Evolution (${period})`;
+            // Update chart title with actual date range
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            let chartTitleText = '';
+            if (calendarViewMode === 'monthly') {
+                chartTitleText = `${monthNames[startDate.getMonth()]} ${startDate.getFullYear()}`;
+            } else {
+                const startMonth = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const endMonth = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: startDate.getFullYear() !== endDate.getFullYear() ? 'numeric' : undefined });
+                chartTitleText = `${startMonth} \u2013 ${endMonth}`;
+            }
+            document.getElementById('chartTitle').innerHTML = `<iconify-icon icon="lucide:chart-no-axes-combined" aria-hidden="true"></iconify-icon> Evolution (${chartTitleText})`;
             drawChart(period);
             renderMonthEndBalances();
         }
@@ -1242,6 +1272,7 @@ document.addEventListener('DOMContentLoaded', function() {
             viewDropdown.classList.remove('open');
             viewToggleBtn.classList.remove('open');
             currentWeekStartDate = null;
+            document.getElementById('periodSelect').value = 'weekly';
             renderCalendar();
             renderOverview();
         });
@@ -1252,6 +1283,7 @@ document.addEventListener('DOMContentLoaded', function() {
             viewIcon.setAttribute('icon', 'lucide:calendar');
             viewDropdown.classList.remove('open');
             viewToggleBtn.classList.remove('open');
+            document.getElementById('periodSelect').value = 'monthly';
             renderCalendar();
             renderOverview();
         });

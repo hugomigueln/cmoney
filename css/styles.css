@@ -434,19 +434,52 @@
         }
         .weekdays { margin-bottom: 8px; color: var(--muted); font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
         .weekdays div { text-align: center; padding: 6px; }
-        .day-cell {
-            min-height: 118px;
-            padding: 10px;
-            background: rgba(255, 255, 255, .025);
-            border: 1px solid var(--line);
-            border-radius: 15px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transition: .2s ease;
-            overflow: hidden;
-        }
+        
+    .day-cell {
+        display: flex;
+        flex-direction: column;
+        min-height: 100px;
+        padding: 8px;
+        background: var(--surface-2);
+        border-radius: var(--r);
+        position: relative;
+    }
+    .day-cell.empty {
+        background: transparent;
+        min-height: auto;
+    }
+    .day-cell .day-number {
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+    .day-cell .day-name {
+        font-size: 11px;
+        color: var(--muted);
+        text-align: center;
+        margin: 4px 0;
+        text-transform: uppercase;
+    }
+    .day-cell .indicators {
+        margin-top: auto;
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .day-cell .day-balance {
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 4px;
+    }
+    .day-cell.today {
+        background: rgba(155, 124, 255, 0.1);
+    }
+
         .day-cell:hover { transform: translateY(-2px); border-color: rgba(155, 124, 255, .7); background: rgba(155, 124, 255, .055); }
         .day-cell.empty { background: transparent; border-color: transparent; cursor: default; min-height: 0; }
         .day-cell.empty:hover { transform: none; border-color: transparent; background: transparent; }
@@ -995,4 +1028,42 @@
     }
     .view-option span {
         font-size: 13px;
+    }
+
+
+    /* Weekly View Cell Layout */
+    .day-cell.weekly-cell {
+        display: flex;
+        flex-direction: column;
+        min-height: 120px;
+        padding: 8px;
+        background: var(--surface-2);
+    }
+    .day-cell.weekly-cell .day-number {
+        font-size: 18px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+    .day-cell.weekly-cell .day-name {
+        font-size: 11px;
+        color: var(--muted);
+        text-align: center;
+        margin: 4px 0;
+        text-transform: uppercase;
+    }
+    .day-cell.weekly-cell .indicators {
+        margin-top: auto;
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .day-cell.weekly-cell .day-balance {
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 4px;
     }
