@@ -896,36 +896,7 @@
         .tx-actions iconify-icon, .actions iconify-icon { width: 15px; height: 15px; }
         .fab-add iconify-icon { width: 20px; height: 20px; }
 
-    .view-toggle {
-        display: flex;
-        gap: 8px;
-        margin-left: 16px;
-    }
-    .view-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 6px 10px;
-        background: var(--surface-2);
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        color: var(--muted);
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    .view-btn:hover {
-        background: var(--surface-3);
-        color: var(--text);
-    }
-    .view-btn.active {
-        background: var(--primary);
-        border-color: var(--primary);
-        color: white;
-    }
-    .view-btn iconify-icon {
-        width: 16px;
-        height: 16px;
-    }
+
     .weekly-cell {
         grid-column: span 1;
     }
@@ -942,4 +913,86 @@
     }
     .days-grid.weekly-view {
         grid-template-columns: repeat(7, 1fr);
+    }
+
+
+    /* View Toggle Dropdown */
+    .view-toggle {
+        display: inline-flex;
+        position: relative;
+        margin-left: 16px;
+        vertical-align: middle;
+    }
+    .view-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 12px;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: var(--text);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .view-toggle-btn:hover {
+        background: var(--surface-3);
+    }
+    .view-toggle-btn .view-arrow {
+        width: 14px;
+        height: 14px;
+        transition: transform 0.2s ease;
+    }
+    .view-toggle-btn.open .view-arrow {
+        transform: rotate(180deg);
+    }
+    .view-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 4px;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 4px;
+        min-width: 140px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        transition: all 0.2s ease;
+        z-index: 1000;
+    }
+    .view-dropdown.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    .view-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 8px 12px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        color: var(--muted);
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s ease;
+    }
+    .view-option:hover {
+        background: var(--surface-3);
+        color: var(--text);
+    }
+    .view-option.active {
+        background: var(--primary);
+        color: white;
+    }
+    .view-option iconify-icon {
+        width: 16px;
+        height: 16px;
+    }
+    .view-option span {
+        font-size: 13px;
     }

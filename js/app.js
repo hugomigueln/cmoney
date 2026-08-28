@@ -1215,11 +1215,32 @@ document.addEventListener('DOMContentLoaded', function() {
             renderOverview();
         });
 
-        // View mode toggle
+        // View mode dropdown toggle
+        const viewToggleBtn = document.getElementById('viewToggleBtn');
+        const viewDropdown = document.getElementById('viewDropdown');
+        const viewIcon = document.getElementById('viewIcon');
+        
+        viewToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            viewDropdown.classList.toggle('open');
+            viewToggleBtn.classList.toggle('open');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            viewDropdown.classList.remove('open');
+            viewToggleBtn.classList.remove('open');
+        });
+        viewDropdown.addEventListener('click', (e) => e.stopPropagation());
+        
+        // View option clicks
         document.getElementById('weeklyViewBtn').addEventListener('click', () => {
             calendarViewMode = 'weekly';
             document.getElementById('weeklyViewBtn').classList.add('active');
             document.getElementById('monthlyViewBtn').classList.remove('active');
+            viewIcon.setAttribute('icon', 'lucide:calendar-days');
+            viewDropdown.classList.remove('open');
+            viewToggleBtn.classList.remove('open');
             currentWeekStartDate = null;
             renderCalendar();
             renderOverview();
@@ -1228,6 +1249,9 @@ document.addEventListener('DOMContentLoaded', function() {
             calendarViewMode = 'monthly';
             document.getElementById('weeklyViewBtn').classList.remove('active');
             document.getElementById('monthlyViewBtn').classList.add('active');
+            viewIcon.setAttribute('icon', 'lucide:calendar');
+            viewDropdown.classList.remove('open');
+            viewToggleBtn.classList.remove('open');
             renderCalendar();
             renderOverview();
         });
@@ -1282,4 +1306,5 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize view toggle buttons
         document.getElementById('weeklyViewBtn').classList.add('active');
         document.getElementById('monthlyViewBtn').classList.remove('active');
+        document.getElementById('viewIcon').setAttribute('icon', 'lucide:calendar-days');
 });
