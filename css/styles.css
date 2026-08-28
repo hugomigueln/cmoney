@@ -138,33 +138,6 @@
         }
         .calendar-wrapper,
         .calculator-wrapper { padding: 24px; }
-        .calendar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 20px;
-            position: relative;
-            flex-wrap: wrap;
-        }
-        .fab-add-container { position: relative; }
-        .fab-add {
-            padding: 12px 28px;
-            border: 0;
-            border-radius: 999px;
-            background: var(--primary);
-            color: #09080e;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            box-shadow: 0 14px 35px rgba(124, 92, 255, .35);
-            transition: .2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            white-space: nowrap;
-        }
         .fab-add:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 18px 45px rgba(124, 92, 255, .5); }
         .calculator-header { margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
         .calculator-header h2 { margin: 0; font-size: 1.35rem; letter-spacing: -.04em; }
@@ -405,7 +378,6 @@
         .month-end-value.positive { color: var(--income); }
         .month-end-value.negative { color: var(--expense); }
         .month-year { font-size: clamp(1.35rem, 2vw, 1.9rem); font-weight: 800; letter-spacing: -.04em; }
-        .nav-buttons { display: flex; gap: 7px; }
         .nav-buttons button,
         .btn-secondary {
             border: 1px solid var(--line);
@@ -427,88 +399,27 @@
         .nav-buttons .today-btn:hover,
         .btn-primary:hover { background: #b29bff; }
         .weekdays,
-        .days-grid {
-            display: grid;
-            grid-template-columns: repeat(7, minmax(0, 1fr));
-            gap: 8px;
-        }
-        .weekdays { margin-bottom: 8px; color: var(--muted); font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
         .weekdays div { text-align: center; padding: 6px; }
         
-        .day-cell {
-        display: flex;
-        flex-direction: column;
-        height: 100px;
-        padding: 8px;
-        background: var(--surface-2);
-        border-radius: var(--r);
-        position: relative;
-    }
-    .day-cell.empty {
+        .day-cell.empty {
         background: transparent;
         height: 100px;
     }
-    .day-cell .day-number {
-        font-size: 16px;
-        font-weight: 600;
-        text-align: center;
-    }
-    .day-cell .day-info-bottom {
-        margin-top: auto;
-        padding-top: 4px;
-        border-top: 1px solid var(--line);
-    }
-    .day-cell .indicators {
-        display: flex;
-        gap: 4px;
-        justify-content: center;
-        flex-wrap: wrap;
-        font-size: 11px;
-    }
-    .day-cell .day-balance {
-        font-size: 11px;
-        color: var(--muted);
-        text-align: center;
-    }
-    .day-cell.today {
+    .day-cell .day-cell .day-cell .day-cell .day-cell.today {
         background: rgba(155, 124, 255, 0.1);
     }
-    .day-cell.weekly-cell {
-        height: 100px;
-    }
-    .day-cell.empty {
+    .day-cell.day-cell.empty {
         background: transparent;
         min-height: auto;
     }
-    .day-cell .day-number {
-        font-size: 16px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-    }
-    .day-cell .day-name {
+    .day-cell .day-cell .day-name {
         font-size: 11px;
         color: var(--muted);
         text-align: center;
         margin: 4px 0;
         text-transform: uppercase;
     }
-    .day-cell .indicators {
-        margin-top: auto;
-        display: flex;
-        gap: 4px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    .day-cell .day-balance {
-        font-size: 12px;
-        color: var(--muted);
-        text-align: center;
-        margin-top: 4px;
-    }
-    .day-cell.today {
+    .day-cell .day-cell .day-cell.today {
         background: rgba(155, 124, 255, 0.1);
     }
 
@@ -516,41 +427,11 @@
         .day-cell.empty { background: transparent; border-color: transparent; cursor: default; min-height: 0; }
         .day-cell.empty:hover { transform: none; border-color: transparent; background: transparent; }
         .day-cell.today { border-color: var(--primary); box-shadow: inset 0 0 0 1px rgba(155, 124, 255, .2); background: rgba(155, 124, 255, .09); }
-        .day-number { font-weight: 800; font-size: .82rem; display: flex; align-items: center; gap: 5px; }
-        .today-marker { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(155, 124, 255, .6); }
             50% { box-shadow: 0 0 0 4px rgba(155, 124, 255, 0); }
         }
-        .indicators { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
         .income-dot,
-        .expense-dot {
-            padding: 3px 7px;
-            border-radius: 8px;
-            font-size: .62rem;
-            font-weight: 800;
-            white-space: nowrap;
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: inline-block;
-            font-variant-numeric: tabular-nums;
-        }
-        .income-dot { color: var(--income); background: rgba(67, 217, 139, .10); }
-        .expense-dot { color: var(--expense); background: rgba(255, 107, 122, .10); }
-        .day-balance {
-            margin-top: auto;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, .07);
-            text-align: right;
-            font-size: .7rem;
-            color: var(--muted);
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-variant-numeric: tabular-nums;
-        }
         .overview-section { margin-top: 20px; padding: 24px; }
         .overview-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
         .overview-header h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.03em; display: flex; align-items: center; gap: 8px; }
@@ -869,7 +750,6 @@
         .toast.show { opacity: 1; transform: translate(-50%, 0); }
         @media (max-width: 900px) {
             .overview-cards { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
-            .day-cell { min-height: 100px; }
             .calculator-display { padding: 16px; }
             .main-display { font-size: 2rem; }
             .calc-btn { padding: 14px 0; font-size: 1.1rem; }
@@ -889,17 +769,9 @@
             .recurring-header,
             .settings-group,
             .calculator-wrapper { padding: 14px; border-radius: 18px; }
-            .calendar-header { align-items: flex-start; }
             .month-year { font-size: 1.2rem; }
             .nav-buttons button { padding: 8px 10px; font-size: .8rem; }
-            .weekdays, .days-grid { gap: 4px; }
-            .weekdays { font-size: .56rem; }
-            .day-cell { min-height: 78px; padding: 7px; border-radius: 11px; }
-            .day-number { font-size: .75rem; }
-            .indicators { gap: 2px; margin-top: 4px; }
-            .income-dot, .expense-dot { padding: 2px 4px; font-size: .5rem; }
-            .day-balance { font-size: .55rem; padding-top: 6px; }
-            .overview-header { align-items: flex-start; flex-direction: column; }
+            .weekdays, .income-dot, .overview-header { align-items: flex-start; flex-direction: column; }
             .overview-cards { grid-template-columns: 1fr 1fr; gap: 7px; }
             .overview-card { min-height: 92px; padding: 12px; }
             .overview-card .value { font-size: 1rem; }
@@ -917,17 +789,12 @@
             .month-end-card { padding: 10px; font-size: .8rem; }
             .salary-title { font-size: .9rem; }
             .tab-actions { gap: 4px; }
-            .fab-add { padding: 10px 18px; font-size: .85rem; }
             .add-btns { grid-template-columns: 1fr; }
             .result-value { font-size: 1.5rem; }
         }
         @media (max-width: 390px) {
             .overview-cards { grid-template-columns: 1fr; }
-            .day-cell { min-height: 66px; padding: 5px; }
-            .day-number { font-size: .65rem; }
-            .income-dot, .expense-dot { font-size: .45rem; padding: 1px 3px; }
-            .day-balance { font-size: .48rem; }
-            .main-display { font-size: 1.5rem; }
+            .income-dot, .main-display { font-size: 1.5rem; }
             .calc-btn { padding: 10px 0; font-size: .9rem; }
             .calc-tab { padding: 4px 10px; font-size: .75rem; }
             .month-end-card { padding: 8px; font-size: .75rem; }
@@ -943,29 +810,13 @@
         .fab-add iconify-icon { width: 20px; height: 20px; }
 
 
-    .weekly-cell {
-        grid-column: span 1;
-    }
     .weekly-cell .day-name {
         font-size: 11px;
         color: var(--muted);
         margin-top: 2px;
         text-align: center;
     }
-    .days-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
-    }
-
-
     /* View Toggle Dropdown */
-    .view-toggle {
-        display: inline-flex;
-        position: relative;
-        margin-left: 16px;
-        vertical-align: middle;
-    }
     .view-toggle-btn {
         display: inline-flex;
         align-items: center;
@@ -1042,46 +893,7 @@
 
 
     /* Weekly View Cell Layout */
-    .day-cell.weekly-cell {
-        display: flex;
-        flex-direction: column;
-        min-height: 100px;
-        padding: 8px;
-        background: var(--surface-2);
-        border-radius: var(--r);
-    }
-    .day-cell.weekly-cell .day-number {
-        font-size: 18px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        flex: 0 0 auto;
-    }
-    .day-cell.weekly-cell .day-info-bottom {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        margin-top: auto;
-        padding-top: 4px;
-        border-top: 1px solid var(--line);
-    }
-    .day-cell.weekly-cell .indicators {
-        display: flex;
-        gap: 4px;
-        justify-content: center;
-        flex-wrap: wrap;
-        font-size: 11px;
-    }
-    .day-cell.weekly-cell .day-balance {
-        font-size: 11px;
-        color: var(--muted);
-        text-align: center;
-    }
-
-
-    /* Selected Day Info Card */
+    .day-cell.day-cell.weekly-cell .day-cell.weekly-cell .day-cell.weekly-cell .day-cell.weekly-cell /* Selected Day Info Card */
     .selected-day-info {
         background: var(--surface-2);
         border: 1px solid var(--line);
@@ -1152,15 +964,7 @@
     }
 
 
-    .day-cell.selected {
-        background: rgba(155, 124, 255, 0.2);
-        border: 2px solid var(--primary);
-    }
-    .day-cell.selected .day-number {
-        color: var(--primary);
-    }
-
-    .bottom-nav-item.active {
+    .day-cell.selected .bottom-nav-item.active {
         background: rgba(155, 124, 255, 0.15);
         color: var(--text);
     }
@@ -1179,43 +983,6 @@
     /* Remove body bottom padding since nav is floating */
 
     /* ========== BOTTOM NAVIGATION - Mobile Optimized ========== */
-    .bottom-nav {
-        position: fixed;
-        bottom: 16px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 8px;
-        padding: 8px;
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-radius: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.32);
-        z-index: 1000;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        padding-bottom: env(safe-area-inset-bottom, 8px);
-    }
-    
-    .bottom-nav-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 3px;
-        padding: 10px 14px;
-        min-width: 56px;
-        background: transparent;
-        border: none;
-        border-radius: 36px;
-        color: var(--muted);
-        cursor: pointer;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        font-size: 11px;
-        font-weight: 500;
-    }
-    
     .bottom-nav-item:hover {
         background: rgba(255, 255, 255, 0.06);
         color: var(--text);
@@ -1273,6 +1040,305 @@
         }
     }
     
+    
+    /* ========== BOTTOM NAVIGATION - Clear Glass ========== */
     .bottom-nav {
-        animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 4px;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.16);
+        z-index: 1000;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        padding-bottom: env(safe-area-inset-bottom, 8px);
+    }
+    
+    .bottom-nav-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        min-width: 56px;
+        background: transparent;
+        border: none;
+        border-radius: 36px;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 13px;
+        font-weight: 500;
+    }
+    
+    .bottom-nav-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        transform: translateY(-1px);
+    }
+    
+    .bottom-nav-item:active {
+        transform: translateY(0);
+    }
+    
+    .bottom-nav-item.active {
+        background: linear-gradient(135deg, rgba(155, 124, 255, 0.16), rgba(155, 124, 255, 0.06));
+        color: white;
+        box-shadow: 0 4px 16px rgba(155, 124, 255, 0.18);
+    }
+    
+    .bottom-nav-item.active:hover {
+        background: linear-gradient(135deg, rgba(155, 124, 255, 0.22), rgba(155, 124, 255, 0.08));
+        transform: translateY(-1px);
+    }
+    
+    /* Animation */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .bottom-nav { animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+    /* ========== CALENDAR LAYOUT ========== */
+    .calendar-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding-bottom: 100px;
+    }
+    
+    .calendar-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        padding: 0 16px;
+    }
+    
+    .calendar-title {
+        font-size: 20px;
+        font-weight: 700;
+        flex: 1;
+        min-width: 140px;
+    }
+    
+    .view-toggle {
+        display: inline-flex;
+        position: relative;
+        margin-left: 0;
+    }
+    
+    .view-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 12px;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: var(--text);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 13px;
+        font-weight: 500;
+    }
+    
+    .nav-buttons {
+        display: flex;
+        gap: 4px;
+    }
+    
+    .nav-buttons button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .nav-buttons button:hover {
+        background: var(--surface-3);
+        color: var(--text);
+    }
+    
+    .nav-buttons iconify-icon {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .today-btn {
+        padding: 8px 16px;
+        background: var(--primary);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: 600;
+        font-size: 13px;
+    }
+    
+    .today-btn:hover {
+        background: var(--primary);
+        opacity: 0.9;
+    }
+    
+    .fab-add-container {
+        margin-left: auto;
+    }
+    
+    .fab-add {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 16px;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 16px rgba(155, 124, 255, 0.32);
+    }
+    
+    .fab-add:hover {
+        background: white;
+        color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(155, 124, 255, 0.40);
+    }
+    
+    .fab-add iconify-icon {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+        padding: 0 16px;
+    }
+    
+    .weekdays > div {
+        text-align: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+        padding: 8px 0;
+    }
+    
+    .days-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+        padding: 0 16px;
+    }
+    
+    .day-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 56px;
+        padding: 4px;
+        background: var(--surface-2);
+        border-radius: 12px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .day-cell:hover:not(.empty):not(.selected) {
+        background: var(--surface-3);
+    }
+    
+    .day-cell.empty {
+        background: transparent;
+        cursor: default;
+    }
+    
+    .day-cell.today {
+        background: rgba(155, 124, 255, 0.12);
+    }
+    
+    .day-cell.selected {
+        background: rgba(155, 124, 255, 0.20);
+        border: 2px solid var(--primary);
+    }
+    
+    .day-cell.selected.today {
+        background: rgba(155, 124, 255, 0.28);
+    }
+    
+    .day-cell .day-number {
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .day-cell .today-marker {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: var(--primary);
+        border-radius: 50%;
+    }
+    
+    .day-cell.weekly-cell {
+        height: 56px;
+    }
+    
+    .day-info-bottom {
+        margin-top: auto;
+        padding-top: 4px;
+        border-top: 1px solid var(--line);
+        width: 100%;
+    }
+    
+    .indicators {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        flex-wrap: wrap;
+        font-size: 11px;
+        width: 100%;
+    }
+    
+    .income-dot {
+        background: rgba(67, 217, 139, 0.16);
+        color: var(--income);
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 10px;
+        font-weight: 600;
+    }
+    
+    .expense-dot {
+        background: rgba(255, 107, 122, 0.16);
+        color: var(--expense);
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 10px;
+        font-weight: 600;
+    }
+    
+    .day-balance {
+        font-size: 11px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 2px;
     }
