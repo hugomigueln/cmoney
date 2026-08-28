@@ -369,25 +369,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const date = weekDates[i];
                     const dateKey = formatDate(date);
                     const isToday = isSameDay(date, today);
-                    
-                    // Get transactions and balance for this specific date
-                    const transactions = getAllTransactionsForDate(data.activeAccountId, dateKey);
-                    const balance = getBalanceAtEndOfDay(data.activeAccountId, dateKey);
-                    const hasIncome = transactions.some(t => t.type === 'income');
-                    const hasExpense = transactions.some(t => t.type === 'expense');
-                    let indicators = '';
-                    if (hasIncome) {
-                        const sum = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-                        indicators += `<span class="income-dot">+${sum.toFixed(2)}</span>`;
-                    }
-                    if (hasExpense) {
-                        const sum = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-                        indicators += `<span class="expense-dot">−${sum.toFixed(2)}</span>`;
-                    }
                     const todayMarker = isToday ? '<span class="today-marker"></span>' : '';
                     const dayNum = date.getDate();
-                    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-                    html += `<div class="day-cell weekly-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${dayNum}${todayMarker}</div><div class="day-info-bottom"><div class="indicators">${indicators}</div></div></div>`;
+                    html += `<div class="day-cell weekly-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${dayNum}${todayMarker}</div></div>`;
                 }
                 document.getElementById('daysGrid').innerHTML = html;
             }
