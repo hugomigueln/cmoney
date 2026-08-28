@@ -26,22 +26,9 @@
             <div class="calendar-wrapper">
                 <div class="calendar-header">
                     <div class="calendar-title" id="calendarTitle">August 2026</div>
-                    <div class="view-toggle">
-                        <button class="view-toggle-btn" id="viewToggleBtn" title="Toggle view mode">
-                            <iconify-icon icon="lucide:calendar-days" id="viewIcon"></iconify-icon>
-                            <iconify-icon icon="lucide:chevron-down" class="view-arrow"></iconify-icon>
-                        </button>
-                        <div class="view-dropdown" id="viewDropdown">
-                            <button class="view-option active" id="weeklyViewBtn" data-view="weekly">
-                                <iconify-icon icon="lucide:calendar-days"></iconify-icon>
-                                <span>Weekly</span>
-                            </button>
-                            <button class="view-option" id="monthlyViewBtn" data-view="monthly">
-                                <iconify-icon icon="lucide:calendar"></iconify-icon>
-                                <span>Monthly</span>
-                            </button>
-                        </div>
-                    </div>
+                    <button class="view-toggle-btn" id="viewToggleBtn" title="Toggle view mode">
+                        <iconify-icon icon="lucide:chevron-down" id="viewArrow"></iconify-icon>
+                    </button>
                     <div class="nav-buttons">
                         <button id="prevPeriod" aria-label="Previous period"><iconify-icon icon="lucide:chevron-left"></iconify-icon></button>
                         <button class="today-btn" id="todayBtn">Today</button>

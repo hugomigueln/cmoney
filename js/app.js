@@ -293,6 +293,25 @@ document.addEventListener('DOMContentLoaded', function() {
         let currentMonth = new Date().getMonth();
         let currentWeekStartDate = null;
         let calendarViewMode = 'weekly';
+        // View mode toggle with arrow
+        document.getElementById('viewToggleBtn').addEventListener('click', () => {
+            if (calendarViewMode === 'weekly') {
+                calendarViewMode = 'monthly';
+                document.getElementById('viewToggleBtn').classList.add('monthly');
+                document.getElementById('viewToggleBtn').classList.remove('weekly');
+            } else {
+                calendarViewMode = 'weekly';
+                document.getElementById('viewToggleBtn').classList.add('weekly');
+                document.getElementById('viewToggleBtn').classList.remove('monthly');
+            }
+            currentWeekStartDate = null;
+            renderCalendar();
+            renderOverview();
+        });
+        
+        // Initialize arrow direction
+        document.getElementById('viewToggleBtn').classList.add('weekly');
+
         let selectedDateKey = null;
 
         function renderCalendar() {
@@ -1270,21 +1289,7 @@ document.addEventListener('DOMContentLoaded', function() {
             renderOverview();
         });
 
-        // View mode dropdown toggle
-        const viewToggleBtn = document.getElementById('viewToggleBtn');
-        const viewDropdown = document.getElementById('viewDropdown');
-        const viewIcon = document.getElementById('viewIcon');
         
-        viewToggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            viewDropdown.classList.toggle('open');
-            viewToggleBtn.classList.toggle('open');
-        });
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            viewDropdown.classList.remove('open');
-            viewToggleBtn.classList.remove('open');
         });
         viewDropdown.addEventListener('click', (e) => e.stopPropagation());
         
