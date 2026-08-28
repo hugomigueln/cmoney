@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // ========== DATA & INIT ==========
         const STORAGE_KEY = 'finance_calendar_data_v3';
         function defaultAccount(name = 'My Account') {
-            return { id: generateId(), name, currency: '€', startBalance: 0, weekStart: 1, transactions: [], recurrences: [] };
+            return { id: generateId(), name, currency: '€', accentColor: '#9b7cff', startBalance: 0, weekStart: 1, transactions: [], recurrences: [] };
         }
         function defaultData() {
             const acc = defaultAccount();
@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     Object.keys(parsed.accounts).forEach(id => {
                         const acc = parsed.accounts[id];
                         if (!acc.currency) acc.currency = '€';
+                        if (!acc.accentColor) acc.accentColor = '#9b7cff';
                         if (acc.startBalance === undefined) acc.startBalance = 0;
                         if (acc.weekStart === undefined) acc.weekStart = 1;
                         if (!acc.transactions) acc.transactions = [];
@@ -70,6 +71,32 @@ document.addEventListener('DOMContentLoaded', function() {
             try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.warn(e); }
         }
         function getActiveAccount() { return data.accounts[data.activeAccountId]; }
+        function applyAccentColor(color) {
+            const accent = /^#[0-9a-f]{6}$/i.test(color) ? color : '#9b7cff';
+            const red = parseInt(accent.slice(1, 3), 16);
+            const green = parseInt(accent.slice(3, 5), 16);
+            const blue = parseInt(accent.slice(5, 7), 16);
+            document.documentElement.style.setProperty('--primary', accent);
+            document.documentElement.style.setProperty('--primary-2', accent);
+            document.documentElement.style.setProperty('--primary-rgb', `${red}, ${green}, ${blue}`);
+            const colorInput = document.getElementById('setAccentColor');
+            const colorValue = document.getElementById('accentColorValue');
+            const colorSwatch = document.getElementById('accentColorSwatch');
+            const colorName = document.getElementById('accentColorName');
+            const colorButton = document.getElementById('accentColorButton');
+            const selectedOption = colorInput?.selectedOptions[0];
+            if (colorInput) colorInput.value = accent;
+            if (colorValue) colorValue.textContent = accent.toUpperCase();
+            if (colorSwatch) colorSwatch.style.backgroundColor = accent;
+            if (colorName) colorName.textContent = selectedOption?.dataset.name || selectedOption?.textContent || 'Custom';
+            document.querySelectorAll('.accent-option').forEach(option => {
+                const isSelected = option.dataset.color.toLowerCase() === accent.toLowerCase();
+                option.classList.toggle('selected', isSelected);
+                option.setAttribute('aria-selected', String(isSelected));
+            });
+            if (colorButton) colorButton.setAttribute('aria-expanded', 'false');
+        }
+        applyAccentColor(getActiveAccount()?.accentColor);
 
         // ========== HELPERS ==========
         function parseDate(str) { const [y, m, d] = str.split('-').map(Number); return new Date(y, m - 1, d); }
@@ -759,8 +786,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const rangeBal = Math.max(maxBal - minBal, 1);
             ctx.clearRect(0, 0, width, height);
             const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
-            grad.addColorStop(0, 'rgba(139,92,246,0.20)');
-            grad.addColorStop(1, 'rgba(139,92,246,0.02)');
+            const accentRgb = getComputedStyle(document.documentElement).getPropertyValue('--primary-rgb').trim();
+            grad.addColorStop(0, `rgba(${accentRgb},0.20)`);
+            grad.addColorStop(1, `rgba(${accentRgb},0.02)`);
             ctx.beginPath();
             points.forEach((p, i) => {
                 const x = pad.left + (i / (points.length - 1)) * chartW;
@@ -780,7 +808,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             });
-            ctx.strokeStyle = '#8b5cf6';
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
             ctx.lineWidth = 2.5;
             ctx.stroke();
             ctx.fillStyle = '#888888';
@@ -920,6 +948,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const acc = getActiveAccount();
             if (!acc) return;
             document.getElementById('setCurrency').value = acc.currency || '€';
+            applyAccentColor(acc.accentColor);
             document.getElementById('setStartBalance').value = acc.startBalance || 0;
             document.getElementById('setWeekStart').value = acc.weekStart !== undefined ? acc.weekStart : 1;
         }
@@ -927,14 +956,33 @@ document.addEventListener('DOMContentLoaded', function() {
             const acc = getActiveAccount();
             if (!acc) return;
             acc.currency = document.getElementById('setCurrency').value;
+            acc.accentColor = document.getElementById('setAccentColor').value;
             acc.startBalance = parseFloat(document.getElementById('setStartBalance').value) || 0;
             acc.weekStart = parseInt(document.getElementById('setWeekStart').value);
+            applyAccentColor(acc.accentColor);
             calendarCache = null;
             saveData();
             renderAll();
             showToast('Settings saved.');
         }
         document.getElementById('setCurrency').addEventListener('change', saveSettings);
+        document.getElementById('accentColorButton').addEventListener('click', () => {
+            const menu = document.getElementById('accentColorMenu');
+            const button = document.getElementById('accentColorButton');
+            const isOpen = menu.classList.toggle('open');
+            button.setAttribute('aria-expanded', String(isOpen));
+        });
+        document.querySelectorAll('.accent-option').forEach(option => option.addEventListener('click', () => {
+            document.getElementById('setAccentColor').value = option.dataset.color;
+            saveSettings();
+            document.getElementById('accentColorMenu').classList.remove('open');
+        }));
+        document.addEventListener('click', event => {
+            if (!event.target.closest('.color-setting')) {
+                document.getElementById('accentColorMenu').classList.remove('open');
+                document.getElementById('accentColorButton').setAttribute('aria-expanded', 'false');
+            }
+        });
         document.getElementById('setStartBalance').addEventListener('change', saveSettings);
         document.getElementById('setWeekStart').addEventListener('change', saveSettings);
         document.getElementById('resetDataBtn').addEventListener('click', () => {
