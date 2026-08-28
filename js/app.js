@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         indicators += `<span class="expense-dot">−${sum.toFixed(2)}</span>`;
                     }
                     const todayMarker = isToday ? '<span class="today-marker"></span>' : '';
-                    html += `<div class="day-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${day}${todayMarker}</div><div class="indicators">${indicators}</div><div class="day-balance">${acc.currency} ${balance.toFixed(2)}</div></div>`;
+                    html += `<div class="day-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${day}${todayMarker}</div><div class="indicators">${indicators}</div></div>`;
                 }
                 document.getElementById('daysGrid').innerHTML = html;
             } else {
@@ -387,13 +387,41 @@ document.addEventListener('DOMContentLoaded', function() {
                     const todayMarker = isToday ? '<span class="today-marker"></span>' : '';
                     const dayNum = date.getDate();
                     const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-                    html += `<div class="day-cell weekly-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${dayNum}${todayMarker}</div><div class="day-info-bottom"><div class="indicators">${indicators}</div><div class="day-balance">${acc.currency} ${balance.toFixed(2)}</div></div></div>`;
+                    html += `<div class="day-cell weekly-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${dayNum}${todayMarker}</div><div class="day-info-bottom"><div class="indicators">${indicators}</div></div></div>`;
                 }
                 document.getElementById('daysGrid').innerHTML = html;
             }
             
             // Add click handlers for day cells
-            document.querySelectorAll('.day-cell:not(.empty)').forEach(el => el.addEventListener('click', () => openDayPanel(el.dataset.date)));
+            document.querySelectorAll('.day-cell:not(.empty)').forEach(el => {
+                el.addEventListener('click', () => {
+                    const dateKey = el.dataset.date;
+                    const acc = getActiveAccount();
+                    if (!acc) return;
+                    
+                    // Show selected day info
+                    const date = parseDate(dateKey);
+                    const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                    const balance = getBalanceAtEndOfDay(data.activeAccountId, dateKey);
+                    const transactions = getAllTransactionsForDate(data.activeAccountId, dateKey);
+                    
+                    document.getElementById('selectedDayDate').textContent = dateStr;
+                    document.getElementById('selectedDayBalance').textContent = `${acc.currency} ${balance.toFixed(2)}`;
+                    document.getElementById('selectedDayTxCount').textContent = transactions.length;
+                    document.getElementById('selectedDayInfo').classList.add('visible');
+                    
+                    // Store for potential panel opening
+                    selectedDateKey = dateKey;
+                });
+            });
+
+            // Click selected day info card to open full panel
+            document.getElementById('selectedDayInfo').addEventListener('click', () => {
+                if (selectedDateKey) {
+                    openDayPanel(selectedDateKey);
+                }
+            });
+
         }
         
         function getStartOfWeek(date, weekStart) {
