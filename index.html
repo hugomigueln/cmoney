@@ -29,13 +29,17 @@
                     <button class="view-toggle-btn" id="viewToggleBtn" title="Toggle view mode">
                         <iconify-icon icon="lucide:chevron-down" id="viewArrow"></iconify-icon>
                     </button>
-                    <div class="nav-buttons">
-                        <button id="prevPeriod" aria-label="Previous period"><iconify-icon icon="lucide:chevron-left"></iconify-icon></button>
-                        <button class="today-btn" id="todayBtn">Today</button>
-                        <button id="nextPeriod" aria-label="Next period"><iconify-icon icon="lucide:chevron-right"></iconify-icon></button>
-                    </div>
-                    <div class="fab-add-container">
-                        <button class="fab-add" id="fabAdd" title="Add transaction"><iconify-icon icon="lucide:plus"></iconify-icon> Add</button>
+                    <div class="calendar-header-controls">
+                        <div class="calendar-nav-group">
+                            <button id="prevPeriod" aria-label="Previous period"><iconify-icon icon="lucide:chevron-left" aria-hidden="true"></iconify-icon></button>
+                            <button id="nextPeriod" aria-label="Next period"><iconify-icon icon="lucide:chevron-right" aria-hidden="true"></iconify-icon></button>
+                        </div>
+                        <div class="today-btn-wrapper">
+                            <button class="today-btn" id="todayBtn"><iconify-icon icon="lucide:calendar-check" aria-hidden="true"></iconify-icon> Today</button>
+                        </div>
+                        <div class="fab-add-container">
+                            <button class="fab-add" id="fabAdd" title="Add transaction"><iconify-icon icon="lucide:plus" aria-hidden="true"></iconify-icon> Add</button>
+                        </div>
                     </div>
                 </div>
                 <div class="weekdays" id="weekdaysContainer"></div>

@@ -968,53 +968,87 @@
         transform: translateY(0);
     }
     
-    /* Navigation Buttons */
-    .nav-buttons {
+
+    /* ========== CALENDAR HEADER BUTTONS ========== */
+    .calendar-header-controls {
         display: flex;
-        gap: 4px;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
     }
     
-    .nav-buttons button {
+    .calendar-nav-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 4px;
+    }
+    
+    .calendar-nav-group button {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 8px 12px;
-        background: var(--surface-2);
-        border: 1px solid var(--line);
-        border-radius: 10px;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        background: transparent;
+        border: none;
+        border-radius: 8px;
         color: var(--muted);
         cursor: pointer;
         transition: all 0.2s ease;
     }
     
-    .nav-buttons button:hover {
+    .calendar-nav-group button:hover {
         background: var(--surface-3);
         color: var(--text);
     }
     
-    .nav-buttons iconify-icon {
+    .calendar-nav-group button:active {
+        background: var(--primary);
+        color: white;
+    }
+    
+    .calendar-nav-group iconify-icon {
         width: 18px;
         height: 18px;
     }
     
+    .today-btn-wrapper {
+        margin-left: 8px;
+    }
+    
     .today-btn {
-        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
         background: var(--primary);
         border: none;
         border-radius: 10px;
         color: white;
         font-weight: 600;
-        font-size: 13px;
+        font-size: 12px;
         cursor: pointer;
         transition: all 0.2s ease;
+        white-space: nowrap;
     }
     
     .today-btn:hover {
-        opacity: 0.9;
+        background: linear-gradient(135deg, var(--primary), #7c5cff);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(155, 124, 255, 0.32);
+    }
+    
+    .today-btn:active {
+        transform: translateY(0);
     }
     
     .fab-add-container {
-        margin-left: auto;
+        margin-left: 8px;
     }
     
     .fab-add {
@@ -1022,12 +1056,33 @@
         align-items: center;
         gap: 6px;
         padding: 10px 16px;
-        background: var(--primary);
+        background: linear-gradient(135deg, var(--primary), #7c5cff);
         border: none;
         border-radius: 50px;
         color: white;
         font-weight: 600;
         font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 16px rgba(155, 124, 255, 0.32);
+        white-space: nowrap;
+    }
+    
+    .fab-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(155, 124, 255, 0.48);
+    }
+    
+    .fab-add:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 12px rgba(155, 124, 255, 0.32);
+    }
+    
+    .fab-add iconify-icon {
+        width: 18px;
+        height: 18px;
+    }
+
         cursor: pointer;
         transition: all 0.2s ease;
         box-shadow: 0 4px 16px rgba(155, 124, 255, 0.32);
@@ -1348,16 +1403,18 @@
         flex-wrap: wrap;
         gap: 8px;
     }
-    .nav-buttons {
-        order: 3;
-        width: 100%;
-        justify-content: center;
-        margin-top: 12px;
+    .calendar-header-controls {
+        flex-wrap: wrap;
     }
     .fab-add-container {
-        order: 2;
+        order: 3;
+        width: 100%;
         margin-left: 0;
         margin-top: 12px;
+    }
+    .fab-add {
+        width: 100%;
+        justify-content: center;
     }
 }
 
@@ -1454,6 +1511,21 @@
     .view-toggle-btn #viewArrow {
         width: 16px;
         height: 16px;
+    }
+    .calendar-header-controls {
+        gap: 6px;
+    }
+    .today-btn {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+    .today-btn iconify-icon {
+        width: 14px;
+        height: 14px;
+    }
+    .fab-add {
+        padding: 8px 14px;
+        font-size: 11px;
     }
     .weekdays > div {
         font-size: 9px;
