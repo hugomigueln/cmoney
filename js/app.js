@@ -150,7 +150,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const start = parseDate(r.startDate);
                 const target = parseDate(dateKey);
                 if (target < start) return false;
-                return getOccurrences(r, target, target).length > 0;
+                const occurrences = getOccurrences(r, start, target);
+                return occurrences.includes(dateKey);
             });
             const generated = recs.map(r => ({
                 id: r.id + '-' + dateKey,
