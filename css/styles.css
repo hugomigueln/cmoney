@@ -809,12 +809,6 @@
         .fab-add iconify-icon { width: 20px; height: 20px; }
 
 
-    .weekly-cell .day-name {
-        font-size: 11px;
-        color: var(--muted);
-        margin-top: 2px;
-        text-align: center;
-    }
     /* View Toggle Dropdown */
     .view-toggle-btn:hover {
         background: var(--surface-3);
@@ -824,8 +818,7 @@
         visibility: visible;
         transform: translateY(0);
     }
-    /* Weekly View Cell Layout */
-    .day-cell.day-cell.weekly-cell .day-cell.weekly-cell .day-cell.weekly-cell .day-cell.weekly-cell /* Selected Day Info Card */
+    /* Selected Day Info Card */
     .selected-day-info.visible {
         display: block;
     }
@@ -929,12 +922,11 @@
     .day-cell.selected.today {
         background: rgba(155, 124, 255, 0.28);
     }
-    
-    .day-cell .day-cell .day-cell.weekly-cell {
-        height: 56px;
+
+    .day-cell.weekly-cell {
+        min-height: 56px;
     }
-    
-    
+
     /* ========== CALENDAR SECTION ========== */
     .calendar-wrapper {
         display: flex;
@@ -1174,7 +1166,7 @@
         margin: 16px 16px 0;
         display: none;
     }
-    
+    /* Selected Day Info Card */
     .selected-day-info.visible {
         display: block;
     }
