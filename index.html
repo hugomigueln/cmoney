@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Finance Calendar</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,500,0,0">
     
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 </head>
@@ -190,7 +191,7 @@
                         <div class="form-row"><label for="daysWorked1">Days Worked</label><input type="number" id="daysWorked1" placeholder="20" step="1" /></div>
                         <button class="calc-btn equals-btn" id="calculateSalary1" style="margin-top:10px; width:100%;"><iconify-icon icon="lucide:calculator"></iconify-icon> Calculate</button>
                     </div>
-                    <div class="result-display" id="salaryResult1" style="display:none;"><div class="result-value" id="salaryAmount1">$0.00</div><div class="result-label">Monthly Salary</div></div>
+                    <div class="result-display" id="salaryResult1" style="display:none;"><div class="result-value" id="salaryAmount1">€0.00</div><div class="result-label">Monthly Salary</div></div>
                 </div>
                 <div id="salary2Calc" class="calc-content">
                     <div class="salary-header">
@@ -206,7 +207,7 @@
                         <div class="form-row"><label for="daysWorked2">Days Worked</label><input type="number" id="daysWorked2" placeholder="20" step="1" /></div>
                         <button class="calc-btn equals-btn" id="calculateSalary2" style="margin-top:10px; width:100%;"><iconify-icon icon="lucide:calculator"></iconify-icon> Calculate</button>
                     </div>
-                    <div class="result-display" id="salaryResult2" style="display:none;"><div class="result-value" id="salaryAmount2">$0.00</div><div class="result-label">Monthly Salary</div></div>
+                    <div class="result-display" id="salaryResult2" style="display:none;"><div class="result-value" id="salaryAmount2">€0.00</div><div class="result-label">Monthly Salary</div></div>
                 </div>
             </div>
         </section>
@@ -220,23 +221,24 @@
                     <button id="createAccountBtn">Create Account</button>
                 </div>
             </div>
-            <div class="settings-group">
+            <div class="settings-group" id="preferencesGroup">
                 <h3><iconify-icon icon="lucide:settings" aria-hidden="true"></iconify-icon> Preferences</h3>
                 <div class="settings-row"><label for="setCurrency">Currency</label><select id="setCurrency"><option>€</option><option>$</option><option>£</option><option>¥</option></select></div>
+                <div class="settings-row"><label for="accentColorButton">Accent Color</label><div class="color-setting"><select id="setAccentColor" class="accent-select"><option value="#9b7cff">Violet</option><option value="#3b82f6">Blue</option><option value="#14b8a6">Teal</option><option value="#f05d72">Coral</option><option value="#d97706">Amber</option></select><button class="accent-picker" id="accentColorButton" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="accent-swatch" id="accentColorSwatch" aria-hidden="true"></span><span class="accent-picker-name" id="accentColorName">Violet</span><iconify-icon icon="lucide:chevron-down" aria-hidden="true"></iconify-icon></button><div class="accent-menu" id="accentColorMenu" role="listbox" aria-label="Accent color options"><button class="accent-option" type="button" role="option" data-color="#9b7cff" data-name="Violet"><span class="accent-swatch" aria-hidden="true"></span><span><strong>Violet</strong><small>Original accent</small></span><iconify-icon class="accent-check" icon="lucide:check" aria-hidden="true"></iconify-icon></button><button class="accent-option" type="button" role="option" data-color="#3b82f6" data-name="Blue"><span class="accent-swatch" aria-hidden="true"></span><span><strong>Blue</strong><small>Cool and focused</small></span><iconify-icon class="accent-check" icon="lucide:check" aria-hidden="true"></iconify-icon></button><button class="accent-option" type="button" role="option" data-color="#14b8a6" data-name="Teal"><span class="accent-swatch" aria-hidden="true"></span><span><strong>Teal</strong><small>Fresh and balanced</small></span><iconify-icon class="accent-check" icon="lucide:check" aria-hidden="true"></iconify-icon></button><button class="accent-option" type="button" role="option" data-color="#f05d72" data-name="Coral"><span class="accent-swatch" aria-hidden="true"></span><span><strong>Coral</strong><small>Warm and energetic</small></span><iconify-icon class="accent-check" icon="lucide:check" aria-hidden="true"></iconify-icon></button><button class="accent-option" type="button" role="option" data-color="#d97706" data-name="Amber"><span class="accent-swatch" aria-hidden="true"></span><span><strong>Amber</strong><small>Bright and grounded</small></span><iconify-icon class="accent-check" icon="lucide:check" aria-hidden="true"></iconify-icon></button></div><span id="accentColorValue">#9B7CFF</span></div></div>
                 <div class="settings-row"><label for="setStartBalance">Initial Balance</label><input type="number" id="setStartBalance" value="0" /></div>
                 <div class="settings-row"><label for="setWeekStart">First Day of Week</label><select id="setWeekStart"><option value="0">Sunday</option><option value="1" selected>Monday</option></select></div>
                 <div class="settings-row"><label>Export Data</label><button class="small-btn" id="exportDataBtn"><iconify-icon icon="lucide:download"></iconify-icon> Export JSON</button></div>
             </div>
-            <div class="settings-group">
+            <div class="settings-group" id="dangerZone">
                 <h3><iconify-icon icon="lucide:trash-2" aria-hidden="true"></iconify-icon> Danger Zone</h3>
                 <button class="danger-btn" id="resetDataBtn"><iconify-icon icon="lucide:alert-triangle"></iconify-icon> Reset All Data</button>
             </div>
         </section>
 
         <div class="bottom-nav" id="bottomNav">
-            <button class="bottom-nav-item active" data-view="calendar"><iconify-icon icon="lucide:calendar"></iconify-icon> Calendar</button>
-            <button class="bottom-nav-item" data-view="recurring"> Recurring</button>
-            <button class="bottom-nav-item" data-view="calculator"> Calculator</button>
+            <button class="bottom-nav-item active" data-view="calendar" aria-label="Calendar"><span class="material-symbols-rounded nav-symbol" aria-hidden="true">calendar_month</span><span class="nav-label">Calendar</span></button>
+            <button class="bottom-nav-item" data-view="recurring" aria-label="Recurring"><span class="material-symbols-rounded nav-symbol" aria-hidden="true">sync</span><span class="nav-label">Recurring</span></button>
+            <button class="bottom-nav-item" data-view="calculator" aria-label="Calculator"><span class="material-symbols-rounded nav-symbol" aria-hidden="true">calculate</span><span class="nav-label">Calculator</span></button>
         </div>
 
         <div class="side-panel-backdrop" id="sidePanelBackdrop"></div>
