@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const todayMarker = isToday ? '<span class="today-marker"></span>' : '';
                     const dayNum = date.getDate();
                     const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-                    html += `<div class="day-cell weekly-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${dayNum}${todayMarker}</div><div class="day-name">${dayName}</div><div class="indicators">${indicators}</div><div class="day-balance">${acc.currency} ${balance.toFixed(2)}</div></div>`;
+                    html += `<div class="day-cell weekly-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${dayNum}${todayMarker}</div><div class="day-info-bottom"><div class="indicators">${indicators}</div><div class="day-balance">${acc.currency} ${balance.toFixed(2)}</div></div></div>`;
                 }
                 document.getElementById('daysGrid').innerHTML = html;
             }

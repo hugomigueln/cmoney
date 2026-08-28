@@ -1035,9 +1035,10 @@
     .day-cell.weekly-cell {
         display: flex;
         flex-direction: column;
-        min-height: 120px;
+        min-height: 100px;
         padding: 8px;
         background: var(--surface-2);
+        border-radius: var(--r);
     }
     .day-cell.weekly-cell .day-number {
         font-size: 18px;
@@ -1046,24 +1047,25 @@
         align-items: center;
         justify-content: center;
         gap: 4px;
+        flex: 0 0 auto;
     }
-    .day-cell.weekly-cell .day-name {
-        font-size: 11px;
-        color: var(--muted);
-        text-align: center;
-        margin: 4px 0;
-        text-transform: uppercase;
+    .day-cell.weekly-cell .day-info-bottom {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-top: auto;
+        padding-top: 4px;
+        border-top: 1px solid var(--line);
     }
     .day-cell.weekly-cell .indicators {
-        margin-top: auto;
         display: flex;
         gap: 4px;
         justify-content: center;
         flex-wrap: wrap;
+        font-size: 11px;
     }
     .day-cell.weekly-cell .day-balance {
-        font-size: 12px;
+        font-size: 11px;
         color: var(--muted);
         text-align: center;
-        margin-top: 4px;
     }
