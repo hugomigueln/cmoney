@@ -770,7 +770,6 @@
             .settings-group,
             .calculator-wrapper { padding: 14px; border-radius: 18px; }
             .month-year { font-size: 1.2rem; }
-            .nav-buttons button { padding: 8px 10px; font-size: .8rem; }
             .weekdays, .income-dot, .overview-header { align-items: flex-start; flex-direction: column; }
             .overview-cards { grid-template-columns: 1fr 1fr; gap: 7px; }
             .overview-card { min-height: 92px; padding: 12px; }
@@ -817,63 +816,13 @@
         text-align: center;
     }
     /* View Toggle Dropdown */
-    .view-toggle-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 8px 12px;
-        background: var(--surface-2);
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        color: var(--text);
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
     .view-toggle-btn:hover {
         background: var(--surface-3);
     }
-    .view-toggle-btn .view-arrow {
-        width: 14px;
-        height: 14px;
-        transition: transform 0.2s ease;
-    }
-    .view-toggle-btn.open .view-arrow {
-        transform: rotate(180deg);
-    }
-    .view-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        margin-top: 4px;
-        background: var(--surface-2);
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 4px;
-        min-width: 140px;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-8px);
-        transition: all 0.2s ease;
-        z-index: 1000;
-    }
-    .view-dropdown.open {
+    .view-toggle-btn .view-toggle-btn.open .view-dropdown.open {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
-    }
-    .view-option {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        width: 100%;
-        padding: 8px 12px;
-        background: transparent;
-        border: none;
-        border-radius: 6px;
-        color: var(--muted);
-        cursor: pointer;
-        text-align: left;
-        transition: all 0.2s ease;
     }
     .view-option:hover {
         background: var(--surface-3);
@@ -894,37 +843,8 @@
 
     /* Weekly View Cell Layout */
     .day-cell.day-cell.weekly-cell .day-cell.weekly-cell .day-cell.weekly-cell .day-cell.weekly-cell /* Selected Day Info Card */
-    .selected-day-info {
-        background: var(--surface-2);
-        border: 1px solid var(--line);
-        border-radius: var(--r);
-        padding: 16px;
-        margin: 16px 0;
-        display: none;
-    }
     .selected-day-info.visible {
         display: block;
-    }
-    .selected-day-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 12px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--line);
-    }
-    .selected-day-label {
-        color: var(--muted);
-        font-size: 13px;
-    }
-    .selected-day-date {
-        font-weight: 600;
-        font-size: 15px;
-    }
-    .selected-day-details {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
     }
     .selected-day-income, .selected-day-expense, .selected-day-balance, .selected-day-transactions {
         display: flex;
@@ -982,135 +902,62 @@
     
     /* Remove body bottom padding since nav is floating */
 
-    /* ========== BOTTOM NAVIGATION - Mobile Optimized ========== */
-    .bottom-nav-item:hover {
-        background: rgba(255, 255, 255, 0.06);
+    /*    /* ========== CALENDAR LAYOUT ========== */
+    .nav-buttons button:hover {
+        background: var(--surface-3);
         color: var(--text);
+    }
+    
+    .nav-buttons iconify-icon {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .today-btn:hover {
+        background: var(--primary);
+        opacity: 0.9;
+    }
+    
+    .fab-add:hover {
+        background: white;
+        color: var(--primary);
         transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(155, 124, 255, 0.40);
     }
     
-    .bottom-nav-item:active {
-        transform: translateY(0);
+    .fab-add iconify-icon {
+        width: 18px;
+        height: 18px;
     }
     
-    .bottom-nav-item.active {
-        background: linear-gradient(135deg, rgba(155, 124, 255, 0.20), rgba(155, 124, 255, 0.08));
-        color: white;
-        box-shadow: 0 4px 16px rgba(155, 124, 255, 0.24);
+    .day-cell:hover:not(.empty):not(.selected) {
+        background: var(--surface-3);
     }
     
-    .bottom-nav-item.active:hover {
-        background: linear-gradient(135deg, rgba(155, 124, 255, 0.28), rgba(155, 124, 255, 0.12));
-        transform: translateY(-2px);
-    }
-    
-    .bottom-nav-item iconify-icon {
-        width: 22px;
-        height: 22px;
-        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .bottom-nav-item:hover iconify-icon,
-    .bottom-nav-item.active iconify-icon {
-        transform: scale(1.10);
-    }
-    
-    .bottom-nav-item span {
-        font-size: 10px;
-        font-weight: 500;
-        letter-spacing: 0.2px;
-        opacity: 0.84;
-        transition: opacity 0.25s ease;
-    }
-    
-    .bottom-nav-item:hover span,
-    .bottom-nav-item.active span {
-        opacity: 1;
-    }
-    
-    /* Animation for nav appearance */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateX(-50%) translateY(16px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-    }
-    
-    
-    /* ========== BOTTOM NAVIGATION - Clear Glass ========== */
-    .bottom-nav {
-        position: fixed;
-        bottom: 16px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 4px;
-        padding: 8px;
-        background: rgba(255, 255, 255, 0.04);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.16);
-        z-index: 1000;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        padding-bottom: env(safe-area-inset-bottom, 8px);
-    }
-    
-    .bottom-nav-item {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 16px;
-        min-width: 56px;
+    .day-cell.empty {
         background: transparent;
-        border: none;
-        border-radius: 36px;
-        color: var(--muted);
-        cursor: pointer;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        font-size: 13px;
-        font-weight: 500;
+        cursor: default;
     }
     
-    .bottom-nav-item:hover {
-        background: rgba(255, 255, 255, 0.08);
-        color: var(--text);
-        transform: translateY(-1px);
+    .day-cell.today {
+        background: rgba(155, 124, 255, 0.12);
     }
     
-    .bottom-nav-item:active {
-        transform: translateY(0);
+    .day-cell.selected.today {
+        background: rgba(155, 124, 255, 0.28);
     }
     
-    .bottom-nav-item.active {
-        background: linear-gradient(135deg, rgba(155, 124, 255, 0.16), rgba(155, 124, 255, 0.06));
-        color: white;
-        box-shadow: 0 4px 16px rgba(155, 124, 255, 0.18);
+    .day-cell .day-cell .day-cell.weekly-cell {
+        height: 56px;
     }
     
-    .bottom-nav-item.active:hover {
-        background: linear-gradient(135deg, rgba(155, 124, 255, 0.22), rgba(155, 124, 255, 0.08));
-        transform: translateY(-1px);
-    }
     
-    /* Animation */
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateX(-50%) translateY(16px); }
-        to { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-    .bottom-nav { animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both; }
-
-    /* ========== CALENDAR LAYOUT ========== */
+    /* ========== CALENDAR SECTION ========== */
     .calendar-wrapper {
         display: flex;
         flex-direction: column;
         gap: 16px;
-        padding-bottom: 100px;
+        margin-bottom: 16px;
     }
     
     .calendar-header {
@@ -1124,10 +971,12 @@
     .calendar-title {
         font-size: 20px;
         font-weight: 700;
+        color: var(--text);
         flex: 1;
-        min-width: 140px;
+        min-width: 120px;
     }
     
+    /* View Toggle Dropdown */
     .view-toggle {
         display: inline-flex;
         position: relative;
@@ -1137,7 +986,7 @@
     .view-toggle-btn {
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
         padding: 8px 12px;
         background: var(--surface-2);
         border: 1px solid var(--line);
@@ -1149,6 +998,76 @@
         font-weight: 500;
     }
     
+    .view-toggle-btn:hover {
+        background: var(--surface-3);
+    }
+    
+    .view-toggle-btn.open .view-arrow {
+        transform: rotate(180deg);
+    }
+    
+    .view-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 4px;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 4px;
+        min-width: 140px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        transition: all 0.2s ease;
+        z-index: 1000;
+    }
+    
+    .view-dropdown.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    .view-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 8px 12px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        color: var(--muted);
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s ease;
+        font-size: 13px;
+    }
+    
+    .view-option:hover {
+        background: var(--surface-3);
+        color: var(--text);
+    }
+    
+    .view-option.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+    
+    .view-option iconify-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .view-arrow {
+        width: 14px;
+        height: 14px;
+        transition: transform 0.2s ease;
+    }
+    
+    /* Navigation Buttons */
     .nav-buttons {
         display: flex;
         gap: 4px;
@@ -1185,10 +1104,11 @@
         color: white;
         font-weight: 600;
         font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s ease;
     }
     
     .today-btn:hover {
-        background: var(--primary);
         opacity: 0.9;
     }
     
@@ -1224,6 +1144,7 @@
         height: 18px;
     }
     
+    /* Weekdays */
     .weekdays {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
@@ -1239,6 +1160,7 @@
         padding: 8px 0;
     }
     
+    /* Days Grid - Same for both weekly and monthly */
     .days-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
@@ -1251,8 +1173,8 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 56px;
-        padding: 4px;
+        min-height: 56px;
+        padding: 6px 4px;
         background: var(--surface-2);
         border-radius: 12px;
         position: relative;
@@ -1298,10 +1220,7 @@
         border-radius: 50%;
     }
     
-    .day-cell.weekly-cell {
-        height: 56px;
-    }
-    
+    /* Info at bottom of cell */
     .day-info-bottom {
         margin-top: auto;
         padding-top: 4px;
@@ -1342,3 +1261,146 @@
         text-align: center;
         margin-top: 2px;
     }
+    
+    /* ========== SELECTED DAY INFO CARD ========== */
+    .selected-day-info {
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        margin: 16px 16px 0;
+        display: none;
+    }
+    
+    .selected-day-info.visible {
+        display: block;
+    }
+    
+    .selected-day-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+    }
+    
+    .selected-day-label {
+        color: var(--muted);
+        font-size: 13px;
+    }
+    
+    .selected-day-date {
+        font-weight: 600;
+        font-size: 15px;
+    }
+    
+    .selected-day-details {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .selected-day-income,
+    .selected-day-expense,
+    .selected-day-balance,
+    .selected-day-transactions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .selected-day-income .label,
+    .selected-day-expense .label,
+    .selected-day-balance .label,
+    .selected-day-transactions .label {
+        color: var(--muted);
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .selected-day-income .label iconify-icon,
+    .selected-day-expense .label iconify-icon,
+    .selected-day-balance .label iconify-icon,
+    .selected-day-transactions .label iconify-icon {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .selected-day-income .value {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--income);
+    }
+    
+    .selected-day-expense .value {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--expense);
+    }
+    
+    .selected-day-balance .value,
+    .selected-day-transactions .value {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    /* ========== BOTTOM NAVIGATION - Text Only, Clear Glass ========== */
+    .bottom-nav {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 4px;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.16);
+        z-index: 1000;
+        padding-bottom: env(safe-area-inset-bottom, 8px);
+    }
+    
+    .bottom-nav-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        min-width: 56px;
+        background: transparent;
+        border: none;
+        border-radius: 36px;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 13px;
+        font-weight: 500;
+    }
+    
+    .bottom-nav-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        transform: translateY(-1px);
+    }
+    
+    .bottom-nav-item:active {
+        transform: translateY(0);
+    }
+    
+    .bottom-nav-item.active {
+        background: linear-gradient(135deg, rgba(155, 124, 255, 0.16), rgba(155, 124, 255, 0.06));
+        color: white;
+        box-shadow: 0 4px 16px rgba(155, 124, 255, 0.18);
+    }
+    
+    .bottom-nav-item.active:hover {
+        background: linear-gradient(135deg, rgba(155, 124, 255, 0.22), rgba(155, 124, 255, 0.08));
+        transform: translateY(-1px);
+    }
+    
+    /* Remove body padding since nav is floating */
