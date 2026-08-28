@@ -895,4 +895,51 @@
         .tx-actions button, .actions button, .nav-buttons button, .account-selector button, .fab-add, .bottom-nav-item { display: inline-flex; align-items: center; justify-content: center; }
         .tx-actions iconify-icon, .actions iconify-icon { width: 15px; height: 15px; }
         .fab-add iconify-icon { width: 20px; height: 20px; }
-    
+
+    .view-toggle {
+        display: flex;
+        gap: 8px;
+        margin-left: 16px;
+    }
+    .view-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 10px;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .view-btn:hover {
+        background: var(--surface-3);
+        color: var(--text);
+    }
+    .view-btn.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+    .view-btn iconify-icon {
+        width: 16px;
+        height: 16px;
+    }
+    .weekly-cell {
+        grid-column: span 1;
+    }
+    .weekly-cell .day-name {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+        text-align: center;
+    }
+    .days-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+    }
+    .days-grid.weekly-view {
+        grid-template-columns: repeat(7, 1fr);
+    }

@@ -25,11 +25,15 @@
         <section class="view active" id="viewCalendar">
             <div class="calendar-wrapper">
                 <div class="calendar-header">
-                    <div class="month-year" id="monthYear">August 2026</div>
+                    <div class="calendar-title" id="calendarTitle">August 2026</div>
+                    <div class="view-toggle">
+                        <button class="view-btn active" id="weeklyViewBtn" data-view="weekly" title="Weekly view"><iconify-icon icon="lucide:calendar-days"></iconify-icon></button>
+                        <button class="view-btn" id="monthlyViewBtn" data-view="monthly" title="Monthly view"><iconify-icon icon="lucide:calendar"></iconify-icon></button>
+                    </div>
                     <div class="nav-buttons">
-                        <button id="prevMonth" aria-label="Previous month"><iconify-icon icon="lucide:chevron-left"></iconify-icon></button>
+                        <button id="prevPeriod" aria-label="Previous period"><iconify-icon icon="lucide:chevron-left"></iconify-icon></button>
                         <button class="today-btn" id="todayBtn">Today</button>
-                        <button id="nextMonth" aria-label="Next month"><iconify-icon icon="lucide:chevron-right"></iconify-icon></button>
+                        <button id="nextPeriod" aria-label="Next period"><iconify-icon icon="lucide:chevron-right"></iconify-icon></button>
                     </div>
                     <div class="fab-add-container">
                         <button class="fab-add" id="fabAdd" title="Add transaction"><iconify-icon icon="lucide:plus"></iconify-icon> Add</button>

@@ -290,50 +290,123 @@
         // ========== CALENDAR ==========
         let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth();
+        let currentWeekStartDate = null;
+        let calendarViewMode = 'weekly';
         let selectedDateKey = null;
 
-        function renderCalendar() {
+        function renderCalendar()         function renderCalendar() {
             const acc = getActiveAccount();
             if (!acc) return;
-            const cache = prepareCalendarData(currentYear, currentMonth, data.activeAccountId);
-            if (!cache) return;
             const weekStart = acc.weekStart;
-            const firstDayIndex = getFirstDayOfMonth(currentYear, currentMonth, weekStart);
-            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
             const today = new Date();
             const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             const ordered = [...weekdays.slice(weekStart), ...weekdays.slice(0, weekStart)];
             document.getElementById('weekdaysContainer').innerHTML = ordered.map(d => `<div>${d}</div>`).join('');
-            let html = '';
-            const totalCells = Math.ceil((firstDayIndex + daysInMonth) / 7) * 7;
-            for (let i = 0; i < totalCells; i++) {
-                const day = i - firstDayIndex + 1;
-                if (day < 1 || day > daysInMonth) {
-                    html += '<div class="day-cell empty"></div>';
-                    continue;
+            
+            if (calendarViewMode === 'monthly') {
+                // Monthly view
+                const cache = prepareCalendarData(currentYear, currentMonth, data.activeAccountId);
+                if (!cache) return;
+                const firstDayIndex = getFirstDayOfMonth(currentYear, currentMonth, weekStart);
+                const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                document.getElementById('calendarTitle').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+                
+                let html = '';
+                const totalCells = Math.ceil((firstDayIndex + daysInMonth) / 7) * 7;
+                for (let i = 0; i < totalCells; i++) {
+                    const day = i - firstDayIndex + 1;
+                    if (day < 1 || day > daysInMonth) {
+                        html += '<div class="day-cell empty"></div>';
+                        continue;
+                    }
+                    const dateKey = dateToKey(currentYear, currentMonth, day);
+                    const isToday = isSameDay(new Date(currentYear, currentMonth, day), today);
+                    const balance = cache.balancesByDate.get(dateKey) ?? acc.startBalance;
+                    const transactions = cache.transactionsByDate.get(dateKey) || [];
+                    const hasIncome = transactions.some(t => t.type === 'income');
+                    const hasExpense = transactions.some(t => t.type === 'expense');
+                    let indicators = '';
+                    if (hasIncome) {
+                        const sum = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+                        indicators += `<span class="income-dot">+${sum.toFixed(2)}</span>`;
+                    }
+                    if (hasExpense) {
+                        const sum = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+                        indicators += `<span class="expense-dot">−${sum.toFixed(2)}</span>`;
+                    }
+                    const todayMarker = isToday ? '<span class="today-marker"></span>' : '';
+                    html += `<div class="day-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${day}${todayMarker}</div><div class="indicators">${indicators}</div><div class="day-balance">${acc.currency} ${balance.toFixed(2)}</div></div>`;
                 }
-                const dateKey = dateToKey(currentYear, currentMonth, day);
-                const isToday = isSameDay(new Date(currentYear, currentMonth, day), today);
-                const balance = cache.balancesByDate.get(dateKey) ?? acc.startBalance;
-                const transactions = cache.transactionsByDate.get(dateKey) || [];
-                const hasIncome = transactions.some(t => t.type === 'income');
-                const hasExpense = transactions.some(t => t.type === 'expense');
-                let indicators = '';
-                if (hasIncome) {
-                    const sum = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-                    indicators += `<span class="income-dot">+${sum.toFixed(2)}</span>`;
+                document.getElementById('daysGrid').innerHTML = html;
+            } else {
+                // Weekly view
+                let startOfWeek;
+                if (currentWeekStartDate) {
+                    startOfWeek = new Date(currentWeekStartDate);
+                } else {
+                    startOfWeek = getStartOfWeek(today, weekStart);
+                    currentWeekStartDate = new Date(startOfWeek);
                 }
-                if (hasExpense) {
-                    const sum = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-                    indicators += `<span class="expense-dot">−${sum.toFixed(2)}</span>`;
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                
+                // Update title to show week range
+                const startMonth = startOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const endMonth = endOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: startOfWeek.getFullYear() !== endOfWeek.getFullYear() ? 'numeric' : undefined });
+                document.getElementById('calendarTitle').textContent = `${startMonth} – ${endMonth}`;
+                
+                // Get all dates in this week
+                const weekDates = [];
+                const tempDate = new Date(startOfWeek);
+                for (let i = 0; i < 7; i++) {
+                    weekDates.push(new Date(tempDate));
+                    tempDate.setDate(tempDate.getDate() + 1);
                 }
-                const todayMarker = isToday ? '<span class="today-marker"></span>' : '';
-                html += `<div class="day-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${day}${todayMarker}</div><div class="indicators">${indicators}</div><div class="day-balance">${acc.currency} ${balance.toFixed(2)}</div></div>`;
+                
+                // Prepare cache for all dates in this week - use the earliest month
+                const cache = prepareCalendarData(
+                    startOfWeek.getFullYear(), 
+                    startOfWeek.getMonth(), 
+                    data.activeAccountId
+                );
+                
+                let html = '';
+                for (let i = 0; i < 7; i++) {
+                    const date = weekDates[i];
+                    const dateKey = formatDate(date);
+                    const isToday = isSameDay(date, today);
+                    const balance = cache.balancesByDate.get(dateKey) ?? acc.startBalance;
+                    const transactions = cache.transactionsByDate.get(dateKey) || [];
+                    const hasIncome = transactions.some(t => t.type === 'income');
+                    const hasExpense = transactions.some(t => t.type === 'expense');
+                    let indicators = '';
+                    if (hasIncome) {
+                        const sum = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+                        indicators += `<span class="income-dot">+${sum.toFixed(2)}</span>`;
+                    }
+                    if (hasExpense) {
+                        const sum = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+                        indicators += `<span class="expense-dot">−${sum.toFixed(2)}</span>`;
+                    }
+                    const todayMarker = isToday ? '<span class="today-marker"></span>' : '';
+                    const dayNum = date.getDate();
+                    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                    html += `<div class="day-cell weekly-cell${isToday ? ' today' : ''}" data-date="${dateKey}"><div class="day-number">${dayNum}${todayMarker}</div><div class="day-name">${dayName}</div><div class="indicators">${indicators}</div><div class="day-balance">${acc.currency} ${balance.toFixed(2)}</div></div>`;
+                }
+                document.getElementById('daysGrid').innerHTML = html;
             }
-            document.getElementById('daysGrid').innerHTML = html;
-            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            document.getElementById('monthYear').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            // Add click handlers for day cells
             document.querySelectorAll('.day-cell:not(.empty)').forEach(el => el.addEventListener('click', () => openDayPanel(el.dataset.date)));
+        }
+        
+        function getStartOfWeek(date, weekStart) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = (day - weekStart + 7) % 7;
+            d.setDate(d.getDate() - diff);
+            return d;
         }
 
         function openDayPanel(dateKey) {
@@ -1107,25 +1180,63 @@
         });
 
         document.getElementById('fabAdd').addEventListener('click', () => openModal('income'));
-        document.getElementById('prevMonth').addEventListener('click', () => {
-            currentMonth--;
-            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        document.getElementById('prevPeriod').addEventListener('click', () => {
+            if (calendarViewMode === 'monthly') {
+                currentMonth--;
+                if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            } else {
+                // Weekly: go to previous week
+                const acc = getActiveAccount();
+                if (acc && currentWeekStartDate) {
+                    currentWeekStartDate.setDate(currentWeekStartDate.getDate() - 7);
+                }
+            }
             calendarCache = null;
             renderCalendar();
+            renderOverview();
         });
-        document.getElementById('nextMonth').addEventListener('click', () => {
-            currentMonth++;
-            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        document.getElementById('nextPeriod').addEventListener('click', () => {
+            if (calendarViewMode === 'monthly') {
+                currentMonth++;
+                if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            } else {
+                // Weekly: go to next week
+                const acc = getActiveAccount();
+                if (acc && currentWeekStartDate) {
+                    currentWeekStartDate.setDate(currentWeekStartDate.getDate() + 7);
+                }
+            }
             calendarCache = null;
             renderCalendar();
+            renderOverview();
         });
         document.getElementById('todayBtn').addEventListener('click', () => {
             const t = new Date();
             currentYear = t.getFullYear();
             currentMonth = t.getMonth();
+            currentWeekStartDate = null;
             calendarCache = null;
             renderCalendar();
+            renderOverview();
         });
+
+        // View mode toggle
+        document.getElementById('weeklyViewBtn').addEventListener('click', () => {
+            calendarViewMode = 'weekly';
+            document.getElementById('weeklyViewBtn').classList.add('active');
+            document.getElementById('monthlyViewBtn').classList.remove('active');
+            currentWeekStartDate = null;
+            renderCalendar();
+            renderOverview();
+        });
+        document.getElementById('monthlyViewBtn').addEventListener('click', () => {
+            calendarViewMode = 'monthly';
+            document.getElementById('weeklyViewBtn').classList.remove('active');
+            document.getElementById('monthlyViewBtn').classList.add('active');
+            renderCalendar();
+            renderOverview();
+        });
+
         document.getElementById('periodSelect').addEventListener('change', renderOverview);
         document.getElementById('addRecurringBtn').addEventListener('click', () => {
             openModal('income', null, 'monthly');
@@ -1172,4 +1283,9 @@
         window.addEventListener('resize', () => {
             if (document.getElementById('viewCalendar').classList.contains('active')) renderOverview();
         });
+
+        // Initialize view toggle buttons
+        document.getElementById('weeklyViewBtn').classList.add('active');
+        document.getElementById('monthlyViewBtn').classList.remove('active');
+
     
