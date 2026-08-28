@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let calendarViewMode = 'weekly';
         let selectedDateKey = null;
 
-        function renderCalendar()         function renderCalendar() {
+        function renderCalendar() {
             const acc = getActiveAccount();
             if (!acc) return;
             const weekStart = acc.weekStart;
