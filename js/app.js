@@ -1,5 +1,5 @@
-
-        // ========== AUTO CATEGORY DICTIONARY ==========
+document.addEventListener('DOMContentLoaded', function() {
+// ========== AUTO CATEGORY DICTIONARY ==========
         const categoryKeywords = {
             income: {
                 'Salary': ['salary', 'wage', 'paycheck', 'payroll', 'income'],
@@ -364,20 +364,15 @@
                     tempDate.setDate(tempDate.getDate() + 1);
                 }
                 
-                // Prepare cache for all dates in this week - use the earliest month
-                const cache = prepareCalendarData(
-                    startOfWeek.getFullYear(), 
-                    startOfWeek.getMonth(), 
-                    data.activeAccountId
-                );
-                
                 let html = '';
                 for (let i = 0; i < 7; i++) {
                     const date = weekDates[i];
                     const dateKey = formatDate(date);
                     const isToday = isSameDay(date, today);
-                    const balance = cache.balancesByDate.get(dateKey) ?? acc.startBalance;
-                    const transactions = cache.transactionsByDate.get(dateKey) || [];
+                    
+                    // Get transactions and balance for this specific date
+                    const transactions = getAllTransactionsForDate(data.activeAccountId, dateKey);
+                    const balance = getBalanceAtEndOfDay(data.activeAccountId, dateKey);
                     const hasIncome = transactions.some(t => t.type === 'income');
                     const hasExpense = transactions.some(t => t.type === 'expense');
                     let indicators = '';
@@ -1287,5 +1282,4 @@
         // Initialize view toggle buttons
         document.getElementById('weeklyViewBtn').classList.add('active');
         document.getElementById('monthlyViewBtn').classList.remove('active');
-
-    
+});
