@@ -435,14 +435,46 @@
         .weekdays { margin-bottom: 8px; color: var(--muted); font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
         .weekdays div { text-align: center; padding: 6px; }
         
-    .day-cell {
+        .day-cell {
         display: flex;
         flex-direction: column;
-        min-height: 100px;
+        height: 100px;
         padding: 8px;
         background: var(--surface-2);
         border-radius: var(--r);
         position: relative;
+    }
+    .day-cell.empty {
+        background: transparent;
+        height: 100px;
+    }
+    .day-cell .day-number {
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+    }
+    .day-cell .day-info-bottom {
+        margin-top: auto;
+        padding-top: 4px;
+        border-top: 1px solid var(--line);
+    }
+    .day-cell .indicators {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        flex-wrap: wrap;
+        font-size: 11px;
+    }
+    .day-cell .day-balance {
+        font-size: 11px;
+        color: var(--muted);
+        text-align: center;
+    }
+    .day-cell.today {
+        background: rgba(155, 124, 255, 0.1);
+    }
+    .day-cell.weekly-cell {
+        height: 100px;
     }
     .day-cell.empty {
         background: transparent;
@@ -943,9 +975,6 @@
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         gap: 8px;
-    }
-    .days-grid.weekly-view {
-        grid-template-columns: repeat(7, 1fr);
     }
 
 
