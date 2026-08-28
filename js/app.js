@@ -1289,35 +1289,6 @@ document.addEventListener('DOMContentLoaded', function() {
             renderOverview();
         });
 
-        
-        });
-        viewDropdown.addEventListener('click', (e) => e.stopPropagation());
-        
-        // View option clicks
-        document.getElementById('weeklyViewBtn').addEventListener('click', () => {
-            calendarViewMode = 'weekly';
-            document.getElementById('weeklyViewBtn').classList.add('active');
-            document.getElementById('monthlyViewBtn').classList.remove('active');
-            viewIcon.setAttribute('icon', 'lucide:calendar-days');
-            viewDropdown.classList.remove('open');
-            viewToggleBtn.classList.remove('open');
-            currentWeekStartDate = null;
-            document.getElementById('periodSelect').value = 'weekly';
-            renderCalendar();
-            renderOverview();
-        });
-        document.getElementById('monthlyViewBtn').addEventListener('click', () => {
-            calendarViewMode = 'monthly';
-            document.getElementById('weeklyViewBtn').classList.remove('active');
-            document.getElementById('monthlyViewBtn').classList.add('active');
-            viewIcon.setAttribute('icon', 'lucide:calendar');
-            viewDropdown.classList.remove('open');
-            viewToggleBtn.classList.remove('open');
-            document.getElementById('periodSelect').value = 'monthly';
-            renderCalendar();
-            renderOverview();
-        });
-
         document.getElementById('periodSelect').addEventListener('change', renderOverview);
         document.getElementById('addRecurringBtn').addEventListener('click', () => {
             openModal('income', null, 'monthly');
@@ -1365,8 +1336,4 @@ document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('viewCalendar').classList.contains('active')) renderOverview();
         });
 
-        // Initialize view toggle buttons
-        document.getElementById('weeklyViewBtn').classList.add('active');
-        document.getElementById('monthlyViewBtn').classList.remove('active');
-        document.getElementById('viewIcon').setAttribute('icon', 'lucide:calendar-days');
 });
