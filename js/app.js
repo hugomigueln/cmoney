@@ -399,13 +399,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     const acc = getActiveAccount();
                     if (!acc) return;
                     
+                    // Remove selected class from all cells
+                    document.querySelectorAll('.day-cell').forEach(c => c.classList.remove('selected'));
+                    
+                    // Add selected class to clicked cell
+                    el.classList.add('selected');
+                    
                     // Show selected day info
                     const date = parseDate(dateKey);
-                    const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                    const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
                     const balance = getBalanceAtEndOfDay(data.activeAccountId, dateKey);
                     const transactions = getAllTransactionsForDate(data.activeAccountId, dateKey);
                     
+                    // Calculate income and expense
+                    const income = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+                    const expense = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+                    
                     document.getElementById('selectedDayDate').textContent = dateStr;
+                    document.getElementById('selectedDayIncome').textContent = `${acc.currency} +${income.toFixed(2)}`;
+                    document.getElementById('selectedDayExpense').textContent = `${acc.currency} -${Math.abs(expense).toFixed(2)}`;
                     document.getElementById('selectedDayBalance').textContent = `${acc.currency} ${balance.toFixed(2)}`;
                     document.getElementById('selectedDayTxCount').textContent = transactions.length;
                     document.getElementById('selectedDayInfo').classList.add('visible');

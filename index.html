@@ -60,12 +60,20 @@
                     <span class="selected-day-date" id="selectedDayDate">-</span>
                 </div>
                 <div class="selected-day-details">
+                    <div class="selected-day-income">
+                        <span class="label"><iconify-icon icon="lucide:trending-up" aria-hidden="true"></iconify-icon> Income:</span>
+                        <span class="value positive" id="selectedDayIncome">+0.00</span>
+                    </div>
+                    <div class="selected-day-expense">
+                        <span class="label"><iconify-icon icon="lucide:trending-down" aria-hidden="true"></iconify-icon> Expense:</span>
+                        <span class="value negative" id="selectedDayExpense">-0.00</span>
+                    </div>
                     <div class="selected-day-balance">
-                        <span class="label">Balance:</span>
-                        <span class="value" id="selectedDayBalance">-</span>
+                        <span class="label"><iconify-icon icon="lucide:wallet" aria-hidden="true"></iconify-icon> Balance:</span>
+                        <span class="value" id="selectedDayBalance">0.00</span>
                     </div>
                     <div class="selected-day-transactions">
-                        <span class="label">Transactions:</span>
+                        <span class="label"><iconify-icon icon="lucide:list" aria-hidden="true"></iconify-icon> Transactions:</span>
                         <span class="value" id="selectedDayTxCount">0</span>
                     </div>
                 </div>
